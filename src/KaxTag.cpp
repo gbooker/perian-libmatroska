@@ -252,7 +252,7 @@ EbmlId KaxTagOriginalDimensions_TheId    (0x4933, 2);
 EbmlId KaxTagSimple_TheId								 (0x67C8, 2);
 EbmlId KaxTagName_TheId									 (0x45A3, 2);
 EbmlId KaxTagLangue_TheId								 (0x447A, 2);
-EbmlId KaxTagDefault_TheId								 (0x44B4, 2);
+EbmlId KaxTagDefault_TheId								 (0x4484, 2);
 EbmlId KaxTagString_TheId								 (0x4487, 2);
 EbmlId KaxTagBinary_TheId								 (0x4485, 2);
 
