@@ -3,7 +3,7 @@
 **
 ** <file/class description>
 **
-** Copyright (C) 2002-2004 Steve Lhomme.  All rights reserved.
+** Copyright (C) 2002-2010 Steve Lhomme.  All rights reserved.
 **
 ** This file is part of libmatroska.
 **
@@ -35,24 +35,21 @@
 #include "matroska/KaxAttachments.h"
 #include "matroska/KaxAttached.h"
 #include "matroska/KaxContexts.h"
+#include "matroska/KaxDefines.h"
 
 using namespace LIBEBML_NAMESPACE;
 
 // sub elements
 START_LIBMATROSKA_NAMESPACE
 
-EbmlSemantic KaxAttachments_ContextList[1] =
-{
-	EbmlSemantic(true, false, KaxAttached::ClassInfos),        ///< EBMLVersion
-};
+DEFINE_START_SEMANTIC(KaxAttachments)
+DEFINE_SEMANTIC_ITEM(true, false, KaxAttached)        ///< EBMLVersion
+DEFINE_END_SEMANTIC(KaxAttachments)
 
-const EbmlSemanticContext KaxAttachments_Context = EbmlSemanticContext(countof(KaxAttachments_ContextList), KaxAttachments_ContextList, &KaxSegment_Context, *GetKaxGlobal_Context, &KaxAttachments::ClassInfos);
+DEFINE_MKX_MASTER_CONS(KaxAttachments, 0x1941A469, 4, KaxSegment, "Attachments");
 
-EbmlId KaxAttachments_TheId(0x1941A469, 4);
-const EbmlCallbacks KaxAttachments::ClassInfos(KaxAttachments::Create, KaxAttachments_TheId, "Attachments", KaxAttachments_Context);
-
-KaxAttachments::KaxAttachments()
- :EbmlMaster(KaxAttachments_Context)
+KaxAttachments::KaxAttachments(EBML_EXTRA_DEF)
+ :EbmlMaster(EBML_CLASS_SEMCONTEXT(KaxAttachments) EBML_DEF_SEP EBML_EXTRA_CALL)
 {
 	SetSizeLength(2); // mandatory min size support (for easier updating) (2^(7*2)-2 = 16Ko)
 }

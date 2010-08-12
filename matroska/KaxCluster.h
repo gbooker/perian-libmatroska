@@ -3,7 +3,7 @@
 **
 ** <file/class description>
 **
-** Copyright (C) 2002-2004 Steve Lhomme.  All rights reserved.
+** Copyright (C) 2002-2010 Steve Lhomme.  All rights reserved.
 **
 ** This library is free software; you can redistribute it and/or
 ** modify it under the terms of the GNU Lesser General Public
@@ -41,6 +41,7 @@
 #include "matroska/KaxBlock.h"
 #include "matroska/KaxCues.h"
 #include "matroska/KaxClusterData.h"
+#include "matroska/KaxDefines.h"
 
 using namespace LIBEBML_NAMESPACE;
 
@@ -48,16 +49,8 @@ START_LIBMATROSKA_NAMESPACE
 
 class KaxSegment;
 
-class MATROSKA_DLL_API KaxCluster : public EbmlMaster {
+DECLARE_MKX_MASTER_CONS(KaxCluster)
 	public:
-		KaxCluster();
-		KaxCluster(const KaxCluster & ElementToClone);
-		static EbmlElement & Create() {return *(new KaxCluster);}
-		const EbmlCallbacks & Generic() const {return ClassInfos;}
-		static const EbmlCallbacks ClassInfos;
-		operator const EbmlId &() const {return ClassInfos.GlobalId;}
-		EbmlElement * Clone() const {return new KaxCluster(*this);}
-
 		/*!
 			\brief Addition of a frame without references
 
@@ -81,7 +74,7 @@ class MATROSKA_DLL_API KaxCluster : public EbmlMaster {
 		/*!
 			\brief Render the data to the stream and retrieve the position of BlockGroups for later cue entries
 		*/
-		uint32 Render(IOCallback & output, KaxCues & CueToUpdate, bool bSaveDefault = false);
+		filepos_t Render(IOCallback & output, KaxCues & CueToUpdate, bool bSaveDefault = false);
 
 		/*!
 			\return the global timecode of this Cluster
@@ -135,7 +128,7 @@ class MATROSKA_DLL_API KaxCluster : public EbmlMaster {
 		bool SetSilentTrackUsed()
 		{
 			bSilentTracksUsed = true;
-			return FindFirstElt(KaxClusterSilentTracks::ClassInfos, true) != NULL;
+			return FindFirstElt(EBML_INFO(KaxClusterSilentTracks), true) != NULL;
 		}
 
 		bool AddBlockBlob(KaxBlockBlob * NewBlob);
@@ -160,7 +153,6 @@ class MATROSKA_DLL_API KaxCluster : public EbmlMaster {
 			\note method used internally
 		*/
 		bool AddFrameInternal(const KaxTrackEntry & track, uint64 timecode, DataBuffer & buffer, KaxBlockGroup * & MyNewBlock, const KaxBlockGroup * PastBlock, const KaxBlockGroup * ForwBlock, LacingType lacing);
-
 };
 
 END_LIBMATROSKA_NAMESPACE

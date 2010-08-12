@@ -1,3 +1,25 @@
+2010-08-xx robux4
+New 1.1.0 version:
+    - give access to the SetParent to KaxSimpleBlock as well
+    - change the placement of a MATROSKA_DLL_API so that it actually works
+    - remove all references to the old/outdated/previous tag system
+    - add the possibility for a DataBuffer class to use its own internal memory
+    - KaxCues::AddBlockGroup() was removed as it's broken beyond repair
+    - add KaxTrackDependency and related elements for combined stereo/3D tracks
+
+2010-06-04 robux4/mosu
+New 1.0.0 version:
+    - rename the library .so name as it's backward incompatible
+
+2010-04-30 robux4/mosu
+New 0.9.0 version:
+    - fix a memory freeing issue in KaxBlock
+    - use the macros from the new libebml 0.8.0 to simplify the element definitions and avoid possible typo bugs
+    - fix some building issues on Linux and MinGW
+    - add matroska_init() and matroska_done() functions, necessary when used with libebml v2
+    - use the new libebml iterators of EbmlMaster where possible
+
+
 2007-01-19 09:58  robux4
 
 	* trunk/libebml/libebml.proj, trunk/libmatroska/libmatroska.proj,

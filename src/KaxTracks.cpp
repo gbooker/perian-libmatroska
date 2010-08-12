@@ -3,7 +3,7 @@
 **
 ** <file/class description>
 **
-** Copyright (C) 2002-2005 Steve Lhomme.  All rights reserved.
+** Copyright (C) 2002-2010 Steve Lhomme.  All rights reserved.
 **
 ** This file is part of libmatroska.
 **
@@ -40,68 +40,74 @@
 #include "matroska/KaxTrackVideo.h"
 #include "matroska/KaxContentEncoding.h"
 #include "matroska/KaxContexts.h"
+#include "matroska/KaxDefines.h"
 
 START_LIBMATROSKA_NAMESPACE
 
-const EbmlSemantic KaxTracks_ContextList[1] =
-{
-	EbmlSemantic(true, false, KaxTrackEntry::ClassInfos),
-};
-
-#if MATROSKA_VERSION == 1
-const EbmlSemantic KaxTrackEntry_ContextList[22] =
-#else // MATROSKA_VERSION
-const EbmlSemantic KaxTrackEntry_ContextList[27] =
-#endif // MATROSKA_VERSION
-{
-	EbmlSemantic(true , true, KaxTrackNumber::ClassInfos),
-	EbmlSemantic(true , true, KaxTrackUID::ClassInfos),
-	EbmlSemantic(true , true, KaxTrackType::ClassInfos),
+DEFINE_START_SEMANTIC(KaxTracks)
+DEFINE_SEMANTIC_ITEM(true, false, KaxTrackEntry)
 #if MATROSKA_VERSION >= 2
-	EbmlSemantic(true , true, KaxTrackFlagEnabled::ClassInfos),
-#endif // MATROSKA_VERSION
-	EbmlSemantic(true , true, KaxTrackFlagDefault::ClassInfos),
-	EbmlSemantic(true , true, KaxTrackFlagForced::ClassInfos),
-	EbmlSemantic(true , true, KaxTrackFlagLacing::ClassInfos),
-	EbmlSemantic(true , true, KaxTrackMinCache::ClassInfos),
-	EbmlSemantic(false, true, KaxTrackMaxCache::ClassInfos),
-	EbmlSemantic(false, true, KaxTrackDefaultDuration::ClassInfos),
-	EbmlSemantic(true , true, KaxTrackTimecodeScale::ClassInfos),
-	EbmlSemantic(true , true, KaxMaxBlockAdditionID::ClassInfos),
-	EbmlSemantic(false, true, KaxTrackName::ClassInfos),
-	EbmlSemantic(false, true, KaxTrackLanguage::ClassInfos),
-	EbmlSemantic(true , true, KaxCodecID::ClassInfos),
-	EbmlSemantic(false, true, KaxCodecPrivate::ClassInfos),
-	EbmlSemantic(false, true, KaxCodecName::ClassInfos),
-	EbmlSemantic(false, true, KaxTrackAttachmentLink::ClassInfos),
+DEFINE_SEMANTIC_ITEM(false, false, KaxTrackDependency)
+#endif
+DEFINE_END_SEMANTIC(KaxTracks)
+
+DEFINE_START_SEMANTIC(KaxTrackEntry)
+DEFINE_SEMANTIC_ITEM(true, true, KaxTrackNumber)
+DEFINE_SEMANTIC_ITEM(true, true, KaxTrackUID)
+DEFINE_SEMANTIC_ITEM(true, true, KaxTrackType)
 #if MATROSKA_VERSION >= 2
-	EbmlSemantic(false, true, KaxCodecSettings::ClassInfos),
-	EbmlSemantic(false, false,KaxCodecInfoURL::ClassInfos),
-	EbmlSemantic(false, false,KaxCodecDownloadURL::ClassInfos),
-	EbmlSemantic(true , true, KaxCodecDecodeAll::ClassInfos),
+DEFINE_SEMANTIC_ITEM(true, true, KaxTrackFlagEnabled)
 #endif // MATROSKA_VERSION
-	EbmlSemantic(false, false,KaxTrackOverlay::ClassInfos),
-	EbmlSemantic(false, false,KaxTrackTranslate::ClassInfos),
-	EbmlSemantic(false, true, KaxTrackAudio::ClassInfos),
-	EbmlSemantic(false, true, KaxTrackVideo::ClassInfos),
-	EbmlSemantic(false, true, KaxContentEncodings::ClassInfos),
-};
+DEFINE_SEMANTIC_ITEM(true, true, KaxTrackFlagDefault)
+DEFINE_SEMANTIC_ITEM(true, true, KaxTrackFlagForced)
+DEFINE_SEMANTIC_ITEM(true, true, KaxTrackFlagLacing)
+DEFINE_SEMANTIC_ITEM(true, true, KaxTrackMinCache)
+DEFINE_SEMANTIC_ITEM(false, true, KaxTrackMaxCache)
+DEFINE_SEMANTIC_ITEM(false, true, KaxTrackDefaultDuration)
+DEFINE_SEMANTIC_ITEM(true, true, KaxTrackTimecodeScale)
+DEFINE_SEMANTIC_ITEM(true, true, KaxMaxBlockAdditionID)
+DEFINE_SEMANTIC_ITEM(false, true, KaxTrackName)
+DEFINE_SEMANTIC_ITEM(false, true, KaxTrackLanguage)
+DEFINE_SEMANTIC_ITEM(true, true, KaxCodecID)
+DEFINE_SEMANTIC_ITEM(false, true, KaxCodecPrivate)
+DEFINE_SEMANTIC_ITEM(false, true, KaxCodecName)
+DEFINE_SEMANTIC_ITEM(false, true, KaxTrackAttachmentLink)
+#if MATROSKA_VERSION >= 2
+DEFINE_SEMANTIC_ITEM(false, true, KaxCodecSettings)
+DEFINE_SEMANTIC_ITEM(false, false, KaxCodecInfoURL)
+DEFINE_SEMANTIC_ITEM(false, false, KaxCodecDownloadURL)
+DEFINE_SEMANTIC_ITEM(true, true, KaxCodecDecodeAll)
+#endif // MATROSKA_VERSION
+DEFINE_SEMANTIC_ITEM(false, false, KaxTrackOverlay)
+DEFINE_SEMANTIC_ITEM(false, false, KaxTrackTranslate)
+DEFINE_SEMANTIC_ITEM(false, true, KaxTrackAudio)
+DEFINE_SEMANTIC_ITEM(false, true, KaxTrackVideo)
+DEFINE_SEMANTIC_ITEM(false, true, KaxContentEncodings)
+DEFINE_END_SEMANTIC(KaxTrackEntry)
 
-const EbmlSemanticContext KaxTracks_Context = EbmlSemanticContext(countof(KaxTracks_ContextList), KaxTracks_ContextList, &KaxSegment_Context, *GetKaxGlobal_Context, &KaxTracks::ClassInfos);
-const EbmlSemanticContext KaxTrackEntry_Context = EbmlSemanticContext(countof(KaxTrackEntry_ContextList), KaxTrackEntry_ContextList, &KaxTracks_Context, *GetKaxGlobal_Context, &KaxTrackEntry::ClassInfos);
+DEFINE_MKX_MASTER     (KaxTracks, 0x1654AE6B, 4, KaxSegment, "Tracks");
+DEFINE_MKX_MASTER_CONS(KaxTrackEntry,   0xAE, 1, KaxTracks, "TrackEntry");
 
-EbmlId KaxTracks_TheId    (0x1654AE6B, 4);
-EbmlId KaxTrackEntry_TheId(0xAE, 1);
+#if MATROSKA_VERSION >= 2
+DEFINE_START_SEMANTIC(KaxTrackDependency)
+DEFINE_SEMANTIC_ITEM(true, true, KaxTrackDependencyType)
+DEFINE_SEMANTIC_ITEM(true, false, KaxTrackDependencyItem)
+DEFINE_END_SEMANTIC(KaxTrackDependency)
 
-const EbmlCallbacks KaxTracks::ClassInfos(KaxTracks::Create, KaxTracks_TheId, "Tracks", KaxTracks_Context);
-const EbmlCallbacks KaxTrackEntry::ClassInfos(KaxTrackEntry::Create, KaxTrackEntry_TheId, "TrackEntry", KaxTrackEntry_Context);
+DEFINE_START_SEMANTIC(KaxTrackDependencyItem)
+DEFINE_SEMANTIC_ITEM(true, true, KaxTrackDependencyUID)
+DEFINE_SEMANTIC_ITEM(false, true, KaxTrackDependencyStereoPos)
+DEFINE_END_SEMANTIC(KaxTrackDependencyItem)
 
-KaxTracks::KaxTracks()
-	:EbmlMaster(KaxTracks_Context)
-{}
+DEFINE_MKX_MASTER  (KaxTrackDependency,          0xE2, 1, KaxTracks, "TrackDependency");
+DEFINE_MKX_UINTEGER(KaxTrackDependencyType,      0xE3, 1, KaxTrackDependency, "TrackDependencyType");
+DEFINE_MKX_MASTER  (KaxTrackDependencyItem,      0xE4, 1, KaxTrackDependency, "TrackDependencyItem");
+DEFINE_MKX_UINTEGER(KaxTrackDependencyUID,       0xE5, 1, KaxTrackDependencyItem, "TrackDependencyUID");
+DEFINE_MKX_UINTEGER(KaxTrackDependencyStereoPos, 0xE9, 1, KaxTrackDependencyItem, "TrackDependencyStereoPos");
+#endif
 
-KaxTrackEntry::KaxTrackEntry()
-	:EbmlMaster(KaxTrackEntry_Context)
+KaxTrackEntry::KaxTrackEntry(EBML_EXTRA_DEF)
+	:EbmlMaster(EBML_CLASS_SEMCONTEXT(KaxTrackEntry) EBML_DEF_SEP EBML_EXTRA_CALL)
 	,bGlobalTimecodeScaleIsSet(false)
 {}
 

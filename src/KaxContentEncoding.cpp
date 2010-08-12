@@ -3,7 +3,7 @@
 **
 ** <file/class description>
 **
-** Copyright (C) 2002-2004 Steve Lhomme.  All rights reserved.
+** Copyright (C) 2002-2010 Steve Lhomme.  All rights reserved.
 **
 ** This file is part of libmatroska.
 **
@@ -34,221 +34,50 @@
 */
 #include "matroska/KaxContentEncoding.h"
 #include "matroska/KaxContexts.h"
+#include "matroska/KaxDefines.h"
 
 START_LIBMATROSKA_NAMESPACE
 
-const EbmlSemantic KaxContentEncodings_ContextList[1] = {
-  EbmlSemantic(true, true, KaxContentEncoding::ClassInfos),
-};
+DEFINE_START_SEMANTIC(KaxContentEncodings)
+DEFINE_SEMANTIC_ITEM(true, true, KaxContentEncoding)
+DEFINE_END_SEMANTIC(KaxContentEncodings)
 
-const EbmlSemantic KaxContentEncoding_ContextList[5] = {
-  EbmlSemantic(true, true, KaxContentEncodingOrder::ClassInfos),
-  EbmlSemantic(true, true, KaxContentEncodingScope::ClassInfos),
-  EbmlSemantic(true, true, KaxContentEncodingType::ClassInfos),
-  EbmlSemantic(false, true, KaxContentCompression::ClassInfos),
-  EbmlSemantic(false, true, KaxContentEncryption::ClassInfos),
-};
+DEFINE_START_SEMANTIC(KaxContentEncoding)
+DEFINE_SEMANTIC_ITEM(true, true, KaxContentEncodingOrder)
+DEFINE_SEMANTIC_ITEM(true, true, KaxContentEncodingScope)
+DEFINE_SEMANTIC_ITEM(true, true, KaxContentEncodingType)
+DEFINE_SEMANTIC_ITEM(false, true, KaxContentCompression)
+DEFINE_SEMANTIC_ITEM(false, true, KaxContentEncryption)
+DEFINE_END_SEMANTIC(KaxContentEncoding)
 
-const EbmlSemantic KaxContentCompression_ContextList[2] = {
-  EbmlSemantic(true, true, KaxContentCompAlgo::ClassInfos),
-  EbmlSemantic(false, true, KaxContentCompSettings::ClassInfos),
-};
+DEFINE_START_SEMANTIC(KaxContentCompression)
+DEFINE_SEMANTIC_ITEM(true, true, KaxContentCompAlgo)
+DEFINE_SEMANTIC_ITEM(false, true, KaxContentCompSettings)
+DEFINE_END_SEMANTIC(KaxContentCompression)
 
-const EbmlSemantic KaxContentEncryption_ContextList[6] = {
-  EbmlSemantic(false, true, KaxContentEncAlgo::ClassInfos),
-  EbmlSemantic(false, true, KaxContentEncKeyID::ClassInfos),
-  EbmlSemantic(false, true, KaxContentSignature::ClassInfos),
-  EbmlSemantic(false, true, KaxContentSigKeyID::ClassInfos),
-  EbmlSemantic(false, true, KaxContentSigAlgo::ClassInfos),
-  EbmlSemantic(false, true, KaxContentSigHashAlgo::ClassInfos),
-};
+DEFINE_START_SEMANTIC(KaxContentEncryption)
+DEFINE_SEMANTIC_ITEM(false, true, KaxContentEncAlgo)
+DEFINE_SEMANTIC_ITEM(false, true, KaxContentEncKeyID)
+DEFINE_SEMANTIC_ITEM(false, true, KaxContentSignature)
+DEFINE_SEMANTIC_ITEM(false, true, KaxContentSigKeyID)
+DEFINE_SEMANTIC_ITEM(false, true, KaxContentSigAlgo)
+DEFINE_SEMANTIC_ITEM(false, true, KaxContentSigHashAlgo)
+DEFINE_END_SEMANTIC(KaxContentEncryption)
 
-EbmlId KaxContentEncodings_TheId       (0x6d80, 2);
-EbmlId KaxContentEncoding_TheId        (0x6240, 2);
-EbmlId KaxContentEncodingOrder_TheId   (0x5031, 2);
-EbmlId KaxContentEncodingScope_TheId   (0x5032, 2);
-EbmlId KaxContentEncodingType_TheId    (0x5033, 2);
-EbmlId KaxContentCompression_TheId     (0x5034, 2);
-EbmlId KaxContentCompAlgo_TheId        (0x4254, 2);
-EbmlId KaxContentCompSettings_TheId    (0x4255, 2);
-EbmlId KaxContentEncryption_TheId      (0x5035, 2);
-EbmlId KaxContentEncAlgo_TheId         (0x47e1, 2);
-EbmlId KaxContentEncKeyID_TheId        (0x47e2, 2);
-EbmlId KaxContentSignature_TheId       (0x47e3, 2);
-EbmlId KaxContentSigKeyID_TheId        (0x47e4, 2);
-EbmlId KaxContentSigAlgo_TheId         (0x47e5, 2);
-EbmlId KaxContentSigHashAlgo_TheId     (0x47e6, 2);
- 
-const EbmlSemanticContext KaxContentEncodings_Context =
-EbmlSemanticContext(countof(KaxContentEncodings_ContextList),
-                    KaxContentEncodings_ContextList, &KaxTrackEntry_Context,
-                    *GetKaxGlobal_Context,
-                    &KaxContentEncodings::ClassInfos);
-
-const EbmlSemanticContext KaxContentEncoding_Context =
-EbmlSemanticContext(countof(KaxContentEncoding_ContextList),
-                    KaxContentEncoding_ContextList,
-                    &KaxContentEncodings_Context,
-                    *GetKaxGlobal_Context,
-                    &KaxContentEncoding::ClassInfos);
-
-const EbmlSemanticContext KaxContentEncodingOrder_Context =
-EbmlSemanticContext(0, NULL, &KaxContentEncoding_Context,
-                    *GetKaxGlobal_Context,
-                    &KaxContentEncodingOrder::ClassInfos);
-
-const EbmlSemanticContext KaxContentEncodingScope_Context =
-EbmlSemanticContext(0, NULL, &KaxContentEncoding_Context,
-                    *GetKaxGlobal_Context,
-                    &KaxContentEncodingScope::ClassInfos);
-
-const EbmlSemanticContext KaxContentEncodingType_Context =
-EbmlSemanticContext(0, NULL, &KaxContentEncoding_Context,
-                    *GetKaxGlobal_Context,
-                    &KaxContentEncodingType::ClassInfos);
-
-const EbmlSemanticContext KaxContentCompression_Context =
-EbmlSemanticContext(countof(KaxContentCompression_ContextList),
-                    KaxContentCompression_ContextList,
-                    &KaxContentEncoding_Context, *GetKaxGlobal_Context,
-                    &KaxContentCompression::ClassInfos);
-
-const EbmlSemanticContext KaxContentCompAlgo_Context =
-EbmlSemanticContext(0, NULL, &KaxContentCompression_Context,
-                    *GetKaxGlobal_Context,
-                    &KaxContentCompAlgo::ClassInfos);
-
-const EbmlSemanticContext KaxContentCompSettings_Context =
-EbmlSemanticContext(0, NULL, &KaxContentCompression_Context,
-                    *GetKaxGlobal_Context,
-                    &KaxContentCompSettings::ClassInfos);
-
-const EbmlSemanticContext KaxContentEncryption_Context =
-EbmlSemanticContext(countof(KaxContentEncryption_ContextList),
-                    KaxContentEncryption_ContextList,
-                    &KaxContentEncoding_Context, *GetKaxGlobal_Context,
-                    &KaxContentEncryption::ClassInfos);
-
-const EbmlSemanticContext KaxContentEncAlgo_Context =
-EbmlSemanticContext(0, NULL, &KaxContentEncryption_Context,
-                    *GetKaxGlobal_Context,
-                    &KaxContentEncAlgo::ClassInfos);
-
-const EbmlSemanticContext KaxContentEncKeyID_Context =
-EbmlSemanticContext(0, NULL, &KaxContentEncryption_Context,
-                    *GetKaxGlobal_Context,
-                    &KaxContentEncKeyID::ClassInfos);
-
-const EbmlSemanticContext KaxContentSignature_Context =
-EbmlSemanticContext(0, NULL, &KaxContentEncryption_Context,
-                    *GetKaxGlobal_Context,
-                    &KaxContentSignature::ClassInfos);
-
-const EbmlSemanticContext KaxContentSigAlgo_Context =
-EbmlSemanticContext(0, NULL, &KaxContentEncryption_Context,
-                    *GetKaxGlobal_Context,
-                    &KaxContentSigKeyID::ClassInfos);
-
-const EbmlSemanticContext KaxContentSigHashAlgo_Context =
-EbmlSemanticContext(0, NULL, &KaxContentEncryption_Context,
-                    *GetKaxGlobal_Context,
-                    &KaxContentSigKeyID::ClassInfos);
-
-const EbmlSemanticContext KaxContentSigKeyID_Context =
-EbmlSemanticContext(0, NULL, &KaxContentEncryption_Context,
-                    *GetKaxGlobal_Context,
-                    &KaxContentSigKeyID::ClassInfos);
-
-const EbmlCallbacks
-KaxContentEncodings::ClassInfos(KaxContentEncodings::Create,
-                                KaxContentEncodings_TheId,
-                                "ContentEncodings",
-                                KaxContentEncodings_Context);
-const EbmlCallbacks
-KaxContentEncoding::ClassInfos(KaxContentEncoding::Create,
-                               KaxContentEncoding_TheId,
-                               "ContentEncoding",
-                               KaxContentEncoding_Context);
-const EbmlCallbacks
-KaxContentEncodingOrder::ClassInfos(KaxContentEncodingOrder::Create,
-                                    KaxContentEncodingOrder_TheId,
-                                    "ContentEncodingOrder",
-                                    KaxContentEncodingOrder_Context);
-const EbmlCallbacks
-KaxContentEncodingScope::ClassInfos(KaxContentEncodingScope::Create,
-                                    KaxContentEncodingScope_TheId,
-                                    "ContentEncodingScope",
-                                    KaxContentEncodingScope_Context);
-const EbmlCallbacks
-KaxContentEncodingType::ClassInfos(KaxContentEncodingType::Create,
-                                   KaxContentEncodingType_TheId,
-                                   "ContentEncodingType",
-                                   KaxContentEncodingType_Context);
-const EbmlCallbacks
-KaxContentCompression::ClassInfos(KaxContentCompression::Create,
-                                  KaxContentCompression_TheId,
-                                  "ContentCompression",
-                                  KaxContentCompression_Context);
-const EbmlCallbacks
-KaxContentCompAlgo::ClassInfos(KaxContentCompAlgo::Create,
-                               KaxContentCompAlgo_TheId,
-                               "ContentCompAlgo",
-                               KaxContentCompAlgo_Context);
-const EbmlCallbacks
-KaxContentCompSettings::ClassInfos(KaxContentCompSettings::Create,
-                                   KaxContentCompSettings_TheId,
-                                   "ContentCompSettings",
-                                   KaxContentCompSettings_Context);
-const EbmlCallbacks
-KaxContentEncryption::ClassInfos(KaxContentEncryption::Create,
-                                 KaxContentEncryption_TheId,
-                                 "ContentEncryption",
-                                 KaxContentEncryption_Context);
-const EbmlCallbacks
-KaxContentEncAlgo::ClassInfos(KaxContentEncAlgo::Create,
-                              KaxContentEncAlgo_TheId,
-                              "ContentEncAlgo",
-                              KaxContentEncAlgo_Context);
-const EbmlCallbacks
-KaxContentEncKeyID::ClassInfos(KaxContentEncKeyID::Create,
-                               KaxContentEncKeyID_TheId,
-                               "ContentEncKeyID",
-                               KaxContentEncKeyID_Context);
-const EbmlCallbacks
-KaxContentSignature::ClassInfos(KaxContentSignature::Create,
-                                KaxContentSignature_TheId,
-                                "ContentSignature",
-                                KaxContentSignature_Context);
-const EbmlCallbacks
-KaxContentSigAlgo::ClassInfos(KaxContentSigAlgo::Create,
-                              KaxContentSigAlgo_TheId,
-                              "ContentSigAlgo",
-                              KaxContentSigAlgo_Context);
-const EbmlCallbacks
-KaxContentSigHashAlgo::ClassInfos(KaxContentSigHashAlgo::Create,
-                                  KaxContentSigHashAlgo_TheId,
-                                  "ContentSigHashAlgo",
-                                  KaxContentSigHashAlgo_Context);
-const EbmlCallbacks
-KaxContentSigKeyID::ClassInfos(KaxContentSigKeyID::Create,
-                               KaxContentSigKeyID_TheId,
-                               "ContentSigKeyID",
-                               KaxContentSigKeyID_Context);
-
-KaxContentEncodings::KaxContentEncodings():
-  EbmlMaster(KaxContentEncodings_Context) {
-}
-
-KaxContentEncoding::KaxContentEncoding():
-  EbmlMaster(KaxContentEncoding_Context) {
-}
-
-KaxContentCompression::KaxContentCompression():
-  EbmlMaster(KaxContentCompression_Context) {
-}
-
-KaxContentEncryption::KaxContentEncryption():
-  EbmlMaster(KaxContentEncryption_Context) {
-}
+DEFINE_MKX_MASTER      (KaxContentEncodings,     0x6d80, 2, KaxTrackEntry, "ContentEncodings");
+DEFINE_MKX_MASTER      (KaxContentEncoding,      0x6240, 2, KaxContentEncodings, "ContentEncoding");
+DEFINE_MKX_UINTEGER_DEF(KaxContentEncodingOrder, 0x5031, 2, KaxContentEncoding, "ContentEncodingOrder", 0);
+DEFINE_MKX_UINTEGER_DEF(KaxContentEncodingScope, 0x5032, 2, KaxContentEncoding, "ContentEncodingScope", 1);
+DEFINE_MKX_UINTEGER_DEF(KaxContentEncodingType,  0x5033, 2, KaxContentEncoding, "ContentEncodingType", 0);
+DEFINE_MKX_MASTER      (KaxContentCompression,   0x5034, 2, KaxContentEncoding, "ContentCompression");
+DEFINE_MKX_UINTEGER_DEF(KaxContentCompAlgo,      0x4254, 2, KaxContentCompression, "ContentCompAlgo", 0);
+DEFINE_MKX_BINARY      (KaxContentCompSettings,  0x4255, 2, KaxContentCompression, "ContentCompSettings");
+DEFINE_MKX_MASTER      (KaxContentEncryption,    0x5035, 2, KaxContentEncoding, "ContentEncryption");
+DEFINE_MKX_UINTEGER_DEF(KaxContentEncAlgo,       0x47e1, 2, KaxContentEncryption, "ContentEncAlgo", 0);
+DEFINE_MKX_BINARY      (KaxContentEncKeyID,      0x47e2, 2, KaxContentEncryption, "ContentEncKeyID");
+DEFINE_MKX_BINARY      (KaxContentSignature,     0x47e3, 2, KaxContentEncryption, "ContentSignature");
+DEFINE_MKX_BINARY      (KaxContentSigKeyID,      0x47e4, 2, KaxContentEncryption, "ContentSigKeyID");
+DEFINE_MKX_UINTEGER_DEF(KaxContentSigAlgo,       0x47e5, 2, KaxContentEncryption, "ContentSigAlgo", 0);
+DEFINE_MKX_UINTEGER_DEF(KaxContentSigHashAlgo,   0x47e6, 2, KaxContentEncryption, "ContentSigHashAlgo", 0);
 
 END_LIBMATROSKA_NAMESPACE

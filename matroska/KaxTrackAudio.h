@@ -3,7 +3,7 @@
 **
 ** <file/class MATROSKA_DLL_API description>
 **
-** Copyright (C) 2002-2004 Steve Lhomme.  All rights reserved.
+** Copyright (C) 2002-2010 Steve Lhomme.  All rights reserved.
 **
 ** This file is part of libmatroska.
 **
@@ -40,78 +40,30 @@
 #include "ebml/EbmlFloat.h"
 #include "ebml/EbmlUInteger.h"
 #include "ebml/EbmlBinary.h"
+#include "matroska/KaxDefines.h"
 
 using namespace LIBEBML_NAMESPACE;
 
 START_LIBMATROSKA_NAMESPACE
 
-class MATROSKA_DLL_API KaxTrackAudio : public EbmlMaster {
-	public:
-		KaxTrackAudio();
-		KaxTrackAudio(const KaxTrackAudio & ElementToClone) :EbmlMaster(ElementToClone) {}
-		static EbmlElement & Create() {return *(new KaxTrackAudio);}
-		const EbmlCallbacks & Generic() const {return ClassInfos;}
-		static const EbmlCallbacks ClassInfos;
-		operator const EbmlId &() const {return ClassInfos.GlobalId;}
-		EbmlElement * Clone() const {return new KaxTrackAudio(*this);}
+DECLARE_MKX_MASTER(KaxTrackAudio)
 };
 
-class MATROSKA_DLL_API KaxAudioSamplingFreq : public EbmlFloat {
-	public:
-		KaxAudioSamplingFreq() :EbmlFloat(8000.0) {}
-		KaxAudioSamplingFreq(const KaxAudioSamplingFreq & ElementToClone) :EbmlFloat(ElementToClone) {}
-		static EbmlElement & Create() {return *(new KaxAudioSamplingFreq);}
-		const EbmlCallbacks & Generic() const {return ClassInfos;}
-		static const EbmlCallbacks ClassInfos;
-		operator const EbmlId &() const {return ClassInfos.GlobalId;}
-		EbmlElement * Clone() const {return new KaxAudioSamplingFreq(*this);}
+DECLARE_MKX_FLOAT(KaxAudioSamplingFreq)
 };
 
-class MATROSKA_DLL_API KaxAudioOutputSamplingFreq : public EbmlFloat {
-	public:
-		KaxAudioOutputSamplingFreq() :EbmlFloat() {}
-		KaxAudioOutputSamplingFreq(const KaxAudioOutputSamplingFreq & ElementToClone) :EbmlFloat(ElementToClone) {}
-		static EbmlElement & Create() {return *(new KaxAudioOutputSamplingFreq);}
-		const EbmlCallbacks & Generic() const {return ClassInfos;}
-		static const EbmlCallbacks ClassInfos;
-		operator const EbmlId &() const {return ClassInfos.GlobalId;}
-		EbmlElement * Clone() const {return new KaxAudioOutputSamplingFreq(*this);}
+DECLARE_MKX_FLOAT(KaxAudioOutputSamplingFreq)
 };
 
-class MATROSKA_DLL_API KaxAudioChannels : public EbmlUInteger {
-	public:
-		KaxAudioChannels() :EbmlUInteger(1) {}
-		KaxAudioChannels(const KaxAudioChannels & ElementToClone) :EbmlUInteger(ElementToClone) {}
-		static EbmlElement & Create() {return *(new KaxAudioChannels);}
-		const EbmlCallbacks & Generic() const {return ClassInfos;}
-		static const EbmlCallbacks ClassInfos;
-		operator const EbmlId &() const {return ClassInfos.GlobalId;}
-		EbmlElement * Clone() const {return new KaxAudioChannels(*this);}
+DECLARE_MKX_UINTEGER(KaxAudioChannels)
 };
 
 #if MATROSKA_VERSION >= 2
-class MATROSKA_DLL_API KaxAudioPosition : public EbmlBinary {
-	public:
-		KaxAudioPosition() {}
-		KaxAudioPosition(const KaxAudioPosition & ElementToClone) :EbmlBinary(ElementToClone){}
-		static EbmlElement & Create() {return *(new KaxAudioPosition);}
-		const EbmlCallbacks & Generic() const {return ClassInfos;}
-		static const EbmlCallbacks ClassInfos;
-		bool ValidateSize(void) const {return true;}
-		operator const EbmlId &() const {return ClassInfos.GlobalId;}
-		EbmlElement * Clone() const {return new KaxAudioPosition(*this);}
+DECLARE_MKX_BINARY(KaxAudioPosition)
 };
 #endif // MATROSKA_VERSION
 
-class MATROSKA_DLL_API KaxAudioBitDepth : public EbmlUInteger {
-	public:
-		KaxAudioBitDepth() {}
-		KaxAudioBitDepth(const KaxAudioBitDepth & ElementToClone) :EbmlUInteger(ElementToClone) {}
-		static EbmlElement & Create() {return *(new KaxAudioBitDepth);}
-		const EbmlCallbacks & Generic() const {return ClassInfos;}
-		static const EbmlCallbacks ClassInfos;
-		operator const EbmlId &() const {return ClassInfos.GlobalId;}
-		EbmlElement * Clone() const {return new KaxAudioBitDepth(*this);}
+DECLARE_MKX_UINTEGER(KaxAudioBitDepth)
 };
 
 END_LIBMATROSKA_NAMESPACE

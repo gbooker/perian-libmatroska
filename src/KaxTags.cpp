@@ -3,7 +3,7 @@
 **
 ** <file/class description>
 **
-** Copyright (C) 2002-2004 Steve Lhomme.  All rights reserved.
+** Copyright (C) 2002-2010 Steve Lhomme.  All rights reserved.
 **
 ** This file is part of libmatroska.
 **
@@ -36,25 +36,17 @@
 #include "matroska/KaxTags.h"
 #include "matroska/KaxTag.h"
 #include "matroska/KaxContexts.h"
+#include "matroska/KaxDefines.h"
 
 using namespace LIBEBML_NAMESPACE;
 
 // sub elements
 START_LIBMATROSKA_NAMESPACE
 
-EbmlSemantic KaxTags_ContextList[1] =
-{
-	EbmlSemantic(true, false, KaxTag::ClassInfos),
-};
+DEFINE_START_SEMANTIC(KaxTags)
+DEFINE_SEMANTIC_ITEM(true, false, KaxTag)
+DEFINE_END_SEMANTIC(KaxTags)
 
-const EbmlSemanticContext KaxTags_Context = EbmlSemanticContext(countof(KaxTags_ContextList), KaxTags_ContextList, &KaxSegment_Context, *GetKaxGlobal_Context, &KaxTags::ClassInfos);
-
-EbmlId KaxTags_TheId(0x1254C367, 4);
-
-const EbmlCallbacks KaxTags::ClassInfos(KaxTags::Create, KaxTags_TheId, "Tags", KaxTags_Context);
-
-KaxTags::KaxTags()
-	:EbmlMaster(KaxTags_Context)
-{}
+DEFINE_MKX_MASTER(KaxTags, 0x1254C367, 4, KaxSegment, "Tags");
 
 END_LIBMATROSKA_NAMESPACE

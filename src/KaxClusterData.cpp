@@ -3,7 +3,7 @@
 **
 ** <file/class description>
 **
-** Copyright (C) 2002-2004 Steve Lhomme.  All rights reserved.
+** Copyright (C) 2002-2010 Steve Lhomme.  All rights reserved.
 **
 ** This file is part of libmatroska.
 **
@@ -34,34 +34,18 @@
 */
 #include "matroska/KaxClusterData.h"
 #include "matroska/KaxContexts.h"
+#include "matroska/KaxDefines.h"
 
 START_LIBMATROSKA_NAMESPACE
 
-EbmlId KaxClusterTimecode_TheId         (0xE7, 1);
-EbmlId KaxClusterSilentTracks_TheId     (0x5854, 2);
-EbmlId KaxClusterSilentTrackNumber_TheId(0x58D7, 2);
-EbmlId KaxClusterPrevSize_TheId         (0xAB, 1);
-EbmlId KaxClusterPosition_TheId         (0xA7, 1);
+DEFINE_START_SEMANTIC(KaxClusterSilentTracks)
+DEFINE_SEMANTIC_ITEM(false, false, KaxClusterSilentTrackNumber)
+DEFINE_END_SEMANTIC(KaxClusterSilentTracks)
 
-EbmlSemantic KaxClusterSilentTracks_ContextList[1] =
-{
-	EbmlSemantic(false,  false, KaxClusterSilentTrackNumber::ClassInfos),
-};
-
-const EbmlSemanticContext KaxClusterTimecode_Context = EbmlSemanticContext(0, NULL, &KaxCluster_Context, *GetKaxGlobal_Context, &KaxClusterTimecode::ClassInfos);
-const EbmlSemanticContext KaxClusterSilentTracks_Context = EbmlSemanticContext(countof(KaxClusterSilentTracks_ContextList), KaxClusterSilentTracks_ContextList, &KaxCluster_Context, *GetKaxGlobal_Context, &KaxClusterSilentTracks::ClassInfos);
-const EbmlSemanticContext KaxClusterSilentTrackNumber_Context = EbmlSemanticContext(0, NULL, &KaxClusterSilentTracks_Context, *GetKaxGlobal_Context, &KaxClusterSilentTrackNumber::ClassInfos);
-const EbmlSemanticContext KaxClusterPosition_Context = EbmlSemanticContext(0, NULL, &KaxCluster_Context, *GetKaxGlobal_Context, &KaxClusterPosition::ClassInfos);
-const EbmlSemanticContext KaxClusterPrevSize_Context = EbmlSemanticContext(0, NULL, &KaxCluster_Context, *GetKaxGlobal_Context, &KaxClusterPrevSize::ClassInfos);
-
-const EbmlCallbacks KaxClusterTimecode::ClassInfos(KaxClusterTimecode::Create, KaxClusterTimecode_TheId, "ClusterTimecode", KaxClusterTimecode_Context);
-const EbmlCallbacks KaxClusterSilentTracks::ClassInfos(KaxClusterSilentTracks::Create, KaxClusterSilentTracks_TheId, "ClusterSilentTracks", KaxClusterSilentTracks_Context);
-const EbmlCallbacks KaxClusterSilentTrackNumber::ClassInfos(KaxClusterSilentTrackNumber::Create, KaxClusterSilentTrackNumber_TheId, "ClusterSilentTrackNumber", KaxClusterSilentTrackNumber_Context);
-const EbmlCallbacks KaxClusterPrevSize::ClassInfos(KaxClusterPrevSize::Create, KaxClusterPrevSize_TheId, "ClusterPrevSize", KaxClusterPrevSize_Context);
-const EbmlCallbacks KaxClusterPosition::ClassInfos(KaxClusterPosition::Create, KaxClusterPosition_TheId, "ClusterPosition", KaxClusterPosition_Context);
-
-KaxClusterSilentTracks::KaxClusterSilentTracks()
-:EbmlMaster(KaxClusterSilentTracks_Context)
-{}
+DEFINE_MKX_UINTEGER(KaxClusterTimecode,            0xE7, 1, KaxCluster, "ClusterTimecode");
+DEFINE_MKX_MASTER  (KaxClusterSilentTracks,      0x5854, 2, KaxCluster, "ClusterSilentTracks")
+DEFINE_MKX_UINTEGER(KaxClusterSilentTrackNumber, 0x58D7, 2, KaxClusterSilentTracks, "ClusterSilentTrackNumber");
+DEFINE_MKX_UINTEGER(KaxClusterPosition,            0xA7, 1, KaxCluster, "ClusterPosition");
+DEFINE_MKX_UINTEGER(KaxClusterPrevSize,            0xAB, 1, KaxCluster, "ClusterPrevSize");
 
 END_LIBMATROSKA_NAMESPACE

@@ -3,7 +3,7 @@
 **
 ** <file/class description>
 **
-** Copyright (C) 2002-2004 Steve Lhomme.  All rights reserved.
+** Copyright (C) 2002-2010 Steve Lhomme.  All rights reserved.
 **
 ** This file is part of libmatroska.
 **
@@ -36,45 +36,26 @@
 #include "matroska/KaxContexts.h"
 #include "matroska/KaxSegment.h"
 #include "matroska/KaxCues.h"
+#include "matroska/KaxDefines.h"
 
 using namespace LIBEBML_NAMESPACE;
 
 // sub elements
 START_LIBMATROSKA_NAMESPACE
 
-EbmlSemantic KaxSeekHead_ContextList[1] = 
-{
-	EbmlSemantic(true,  false,  KaxSeek::ClassInfos),
-};
+DEFINE_START_SEMANTIC(KaxSeekHead)
+DEFINE_SEMANTIC_ITEM(true, false, KaxSeek)
+DEFINE_END_SEMANTIC(KaxSeekHead)
 
-EbmlSemantic KaxSeek_ContextList[2] = 
-{
-	EbmlSemantic(true,  true,  KaxSeekID::ClassInfos),
-	EbmlSemantic(true,  true,  KaxSeekPosition::ClassInfos),
-};
+DEFINE_START_SEMANTIC(KaxSeek) 
+DEFINE_SEMANTIC_ITEM(true, true, KaxSeekID)
+DEFINE_SEMANTIC_ITEM(true, true, KaxSeekPosition)
+DEFINE_END_SEMANTIC(KaxSeek) 
 
-const EbmlSemanticContext KaxSeekHead_Context = EbmlSemanticContext(countof(KaxSeekHead_ContextList), KaxSeekHead_ContextList, &KaxSegment_Context, *GetKaxGlobal_Context, &KaxSeekHead::ClassInfos);
-const EbmlSemanticContext KaxSeek_Context = EbmlSemanticContext(countof(KaxSeek_ContextList), KaxSeek_ContextList, &KaxSeekHead_Context, *GetKaxGlobal_Context, &KaxSeek::ClassInfos);
-const EbmlSemanticContext KaxSeekID_Context = EbmlSemanticContext(0, NULL, &KaxSeek_Context, *GetKaxGlobal_Context, &KaxSeekID::ClassInfos);
-const EbmlSemanticContext KaxSeekPosition_Context = EbmlSemanticContext(0, NULL, &KaxSeek_Context, *GetKaxGlobal_Context, &KaxSeekPosition::ClassInfos);
-
-EbmlId KaxSeekHead_TheId    (0x114D9B74, 4);
-EbmlId KaxSeek_TheId        (0x4DBB, 2);
-EbmlId KaxSeekID_TheId      (0x53AB, 2);
-EbmlId KaxSeekPosition_TheId(0x53AC, 2);
-
-const EbmlCallbacks KaxSeekHead::ClassInfos(KaxSeekHead::Create, KaxSeekHead_TheId, "SeekHeader", KaxSeekHead_Context);
-const EbmlCallbacks KaxSeek::ClassInfos(KaxSeek::Create, KaxSeek_TheId, "SeekPoint", KaxSeek_Context);
-const EbmlCallbacks KaxSeekID::ClassInfos(KaxSeekID::Create, KaxSeekID_TheId, "SeekID", KaxSeekID_Context);
-const EbmlCallbacks KaxSeekPosition::ClassInfos(KaxSeekPosition::Create, KaxSeekPosition_TheId, "SeekPosition", KaxSeekPosition_Context);
-
-KaxSeekHead::KaxSeekHead()
-	:EbmlMaster(KaxSeekHead_Context)
-{}
-
-KaxSeek::KaxSeek()
-	:EbmlMaster(KaxSeek_Context)
-{}
+DEFINE_MKX_MASTER  (KaxSeekHead, 0x114D9B74, 4, KaxSegment, "SeekHeader");
+DEFINE_MKX_MASTER  (KaxSeek,         0x4DBB, 2, KaxSeekHead, "SeekPoint");
+DEFINE_MKX_BINARY  (KaxSeekID,       0x53AB, 2, KaxSeek, "SeekID");
+DEFINE_MKX_UINTEGER(KaxSeekPosition, 0x53AC, 2, KaxSeek, "SeekPosition");
 
 /*!
 	\todo verify that the element is not already in the list
@@ -90,24 +71,24 @@ void KaxSeekHead::IndexThis(const EbmlElement & aElt, const KaxSegment & ParentS
 
 	KaxSeekID & aNewID = GetChild<KaxSeekID>(aNewPoint);
 	binary ID[4];
-	for (int i=aElt.Generic().GlobalId.Length; i>0; i--) {
-		ID[4-i] = (aElt.Generic().GlobalId.Value >> 8*(i-1)) & 0xFF;
-	}
-	aNewID.CopyBuffer(ID, aElt.Generic().GlobalId.Length);
+    ((const EbmlId&)aElt).Fill(ID);
+	aNewID.CopyBuffer(ID, EBML_ID_LENGTH((const EbmlId&)aElt));
 }
 
 KaxSeek * KaxSeekHead::FindFirstOf(const EbmlCallbacks & Callbacks) const
 {
 	// parse all the Entries and find the first to match the type
-	KaxSeek * aElt = static_cast<KaxSeek *>(FindFirstElt(KaxSeek::ClassInfos));
+	KaxSeek * aElt = static_cast<KaxSeek *>(FindFirstElt(EBML_INFO(KaxSeek)));
 	while (aElt != NULL)
 	{
 		KaxSeekID * aId = NULL;
-		for (unsigned int i = 0; i<aElt->ListSize(); i++) {
-			if (EbmlId(*(*aElt)[i]) == KaxSeekID::ClassInfos.GlobalId) {
-				aId = static_cast<KaxSeekID*>((*aElt)[i]);
+        EBML_MASTER_ITERATOR Itr;
+		for (Itr = aElt->begin(); Itr != aElt->end(); ++Itr)
+        {
+			if (EbmlId(*(*Itr)) == EBML_ID(KaxSeekID)) {
+				aId = static_cast<KaxSeekID*>(*Itr);
 				EbmlId aEbmlId(aId->GetBuffer(), aId->GetSize());
-				if (aEbmlId == Callbacks.GlobalId)
+				if (aEbmlId == EBML_INFO_ID(Callbacks))
 				{
 					return aElt;
 				}
@@ -122,23 +103,24 @@ KaxSeek * KaxSeekHead::FindFirstOf(const EbmlCallbacks & Callbacks) const
 
 KaxSeek * KaxSeekHead::FindNextOf(const KaxSeek &aPrev) const
 {
-	unsigned int iIndex;
+    EBML_MASTER_CONST_ITERATOR Itr;
 	KaxSeek *tmp;
 	
 	// look for the previous in the list
-	for (iIndex = 0; iIndex<ElementList.size(); iIndex++)
-	{
-		if (ElementList[iIndex] == static_cast<const EbmlElement*>(&aPrev))
+	for (Itr = begin(); Itr != end(); ++Itr)
+    {
+		if (*Itr == static_cast<const EbmlElement*>(&aPrev))
 			break;
 	}
 
-	if (iIndex <ElementList.size()) {
-		iIndex++;
-		for (; iIndex<ElementList.size(); iIndex++)
-		{
-			if (EbmlId(*(ElementList[iIndex])) == KaxSeek::ClassInfos.GlobalId)
+	if (Itr != end())
+    {
+		++Itr;
+	    for (; Itr != end(); ++Itr)
+        {
+			if (EbmlId(*(*Itr)) == EBML_ID(KaxSeek))
 			{
-				tmp = static_cast<KaxSeek *>(ElementList[iIndex]);
+				tmp = (KaxSeek *)(*Itr);
 				if (tmp->IsEbmlId(aPrev))
 					return tmp;
 			}
@@ -150,7 +132,7 @@ KaxSeek * KaxSeekHead::FindNextOf(const KaxSeek &aPrev) const
 
 int64 KaxSeek::Location() const
 {
-	KaxSeekPosition *aPos = static_cast<KaxSeekPosition*>(FindFirstElt(KaxSeekPosition::ClassInfos));
+	KaxSeekPosition *aPos = static_cast<KaxSeekPosition*>(FindFirstElt(EBML_INFO(KaxSeekPosition)));
 	if (aPos == NULL)
 		return 0;
 	return uint64(*aPos);
@@ -158,7 +140,7 @@ int64 KaxSeek::Location() const
 
 bool KaxSeek::IsEbmlId(const EbmlId & aId) const
 {
-	KaxSeekID *_Id = static_cast<KaxSeekID*>(FindFirstElt(KaxSeekID::ClassInfos));
+	KaxSeekID *_Id = static_cast<KaxSeekID*>(FindFirstElt(EBML_INFO(KaxSeekID)));
 	if (_Id == NULL)
 		return false;
 	EbmlId aEbmlId(_Id->GetBuffer(), _Id->GetSize());
@@ -167,10 +149,10 @@ bool KaxSeek::IsEbmlId(const EbmlId & aId) const
 
 bool KaxSeek::IsEbmlId(const KaxSeek & aPoint) const
 {
-	KaxSeekID *_IdA = static_cast<KaxSeekID*>(FindFirstElt(KaxSeekID::ClassInfos));
+	KaxSeekID *_IdA = static_cast<KaxSeekID*>(FindFirstElt(EBML_INFO(KaxSeekID)));
 	if (_IdA == NULL)
 		return false;
-	KaxSeekID *_IdB = static_cast<KaxSeekID*>(aPoint.FindFirstElt(KaxSeekID::ClassInfos));
+	KaxSeekID *_IdB = static_cast<KaxSeekID*>(aPoint.FindFirstElt(EBML_INFO(KaxSeekID)));
 	if (_IdB == NULL)
 		return false;
 	EbmlId aEbmlIdA(_IdA->GetBuffer(), _IdA->GetSize());

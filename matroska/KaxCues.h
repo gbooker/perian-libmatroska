@@ -3,7 +3,7 @@
 **
 ** <file/class description>
 **
-** Copyright (C) 2002-2004 Steve Lhomme.  All rights reserved.
+** Copyright (C) 2002-2010 Steve Lhomme.  All rights reserved.
 **
 ** This file is part of libmatroska.
 **
@@ -47,18 +47,11 @@ START_LIBMATROSKA_NAMESPACE
 
 class KaxCuePoint;
 
-class MATROSKA_DLL_API KaxCues : public EbmlMaster {
+DECLARE_MKX_MASTER(KaxCues)
 	public:
-		KaxCues();
-		KaxCues(const KaxCues & ElementToClone) :EbmlMaster(ElementToClone) {}
 		~KaxCues();
-		static EbmlElement & Create() {return *(new KaxCues);}
-		const EbmlCallbacks & Generic() const {return ClassInfos;}
-		static const EbmlCallbacks ClassInfos;
-		operator const EbmlId &() const {return ClassInfos.GlobalId;}
-		EbmlElement * Clone() const {return new KaxCues(*this);}
 
-		bool AddBlockGroup(const KaxBlockGroup & BlockReference);
+		//bool AddBlockGroup(const KaxBlockGroup & BlockReference); // deprecated
 		bool AddBlockBlob(const KaxBlockBlob & BlockReference);
 
 		/*!
@@ -70,7 +63,7 @@ class MATROSKA_DLL_API KaxCues : public EbmlMaster {
 		/*!
 			\brief override to sort by timecode/track
 		*/
-		uint32 Render(IOCallback & output, bool bSaveDefault = false) {
+		filepos_t Render(IOCallback & output, bool bSaveDefault = false) {
 			Sort();
 			return EbmlMaster::Render(output, bSaveDefault);
 		}

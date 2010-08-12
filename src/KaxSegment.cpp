@@ -3,7 +3,7 @@
 **
 ** <file/class description>
 **
-** Copyright (C) 2002-2004 Steve Lhomme.  All rights reserved.
+** Copyright (C) 2002-2010 Steve Lhomme.  All rights reserved.
 **
 ** This file is part of libmatroska.
 **
@@ -45,35 +45,32 @@
 #include "matroska/KaxAttachments.h"
 #include "matroska/KaxTags.h"
 #include "matroska/KaxContexts.h"
+#include "matroska/KaxDefines.h"
 
 START_LIBMATROSKA_NAMESPACE
 
-EbmlSemantic KaxMatroska_ContextList[2] =
-{
-	EbmlSemantic(true, true,  EbmlHead::ClassInfos),
-	EbmlSemantic(true, false, KaxSegment::ClassInfos),
-};
+DEFINE_START_SEMANTIC(KaxMatroska)
+DEFINE_SEMANTIC_ITEM(true, true, EbmlHead)
+DEFINE_SEMANTIC_ITEM(true, false, KaxSegment)
+DEFINE_END_SEMANTIC(KaxMatroska)
 
-EbmlSemantic KaxSegment_ContextList[8] =
-{
-	EbmlSemantic(false, false, KaxCluster::ClassInfos),
-	EbmlSemantic(false, false, KaxSeekHead::ClassInfos),
-	EbmlSemantic(false, true,  KaxCues::ClassInfos),
-	EbmlSemantic(false, false, KaxTracks::ClassInfos),
-	EbmlSemantic(true,  true,  KaxInfo::ClassInfos),
-	EbmlSemantic(false, true,  KaxChapters::ClassInfos),
-	EbmlSemantic(false, true,  KaxAttachments::ClassInfos),
-	EbmlSemantic(false, true,  KaxTags::ClassInfos),
-};
+DEFINE_START_SEMANTIC(KaxSegment)
+DEFINE_SEMANTIC_ITEM(false, false, KaxCluster)
+DEFINE_SEMANTIC_ITEM(false, false, KaxSeekHead)
+DEFINE_SEMANTIC_ITEM(false, true, KaxCues)
+DEFINE_SEMANTIC_ITEM(false, false, KaxTracks)
+DEFINE_SEMANTIC_ITEM(true, true, KaxInfo)
+DEFINE_SEMANTIC_ITEM(false, true, KaxChapters)
+DEFINE_SEMANTIC_ITEM(false, true, KaxAttachments)
+DEFINE_SEMANTIC_ITEM(false, true, KaxTags)
+DEFINE_END_SEMANTIC(KaxSegment)
 
-const EbmlSemanticContext KaxMatroska_Context = EbmlSemanticContext(countof(KaxMatroska_ContextList), KaxMatroska_ContextList, NULL, *GetKaxGlobal_Context, NULL);
-const EbmlSemanticContext KaxSegment_Context = EbmlSemanticContext(countof(KaxSegment_ContextList), KaxSegment_ContextList, NULL, *GetKaxGlobal_Context, &KaxSegment::ClassInfos);
+DEFINE_MKX_CONTEXT(KaxMatroska);
 
-EbmlId KaxSegment_TheId(0x18538067, 4);
-const EbmlCallbacks KaxSegment::ClassInfos(KaxSegment::Create, KaxSegment_TheId, "Segment\0rotomopogo", KaxSegment_Context);
+DEFINE_MKX_MASTER_ORPHAN(KaxSegment, 0x18538067, 4, "Segment\0rotomopogo");
 
-KaxSegment::KaxSegment()
-	:EbmlMaster(KaxSegment_Context)
+KaxSegment::KaxSegment(EBML_EXTRA_DEF)
+	:EbmlMaster(EBML_CLASS_SEMCONTEXT(KaxSegment) EBML_DEF_SEP EBML_EXTRA_CALL)
 {
 	SetSizeLength(5); // mandatory min size support (for easier updating) (2^(7*5)-2 = 32Go)
 	SetSizeInfinite(); // by default a segment is big and the size is unknown in advance
@@ -83,12 +80,13 @@ KaxSegment::KaxSegment(const KaxSegment & ElementToClone)
  :EbmlMaster(ElementToClone)
 {
 	// update the parent of each children
-	std::vector<EbmlElement *>::const_iterator Itr = ElementList.begin();
-	while (Itr != ElementList.end())
+	EBML_MASTER_ITERATOR Itr = begin();
+	while (Itr != end())
 	{
-		if (EbmlId(**Itr) == KaxCluster::ClassInfos.GlobalId) {
+		if (EbmlId(**Itr) == EBML_ID(KaxCluster)) {
 			static_cast<KaxCluster *>(*Itr)->SetParent(*this);
 		}
+        ++Itr;
 	}
 }
 

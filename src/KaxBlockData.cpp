@@ -3,7 +3,7 @@
 **
 ** <file/class description>
 **
-** Copyright (C) 2002-2005 Steve Lhomme.  All rights reserved.
+** Copyright (C) 2002-2010 Steve Lhomme.  All rights reserved.
 **
 ** This library is free software; you can redistribute it and/or
 ** modify it under the terms of the GNU Lesser General Public
@@ -35,71 +35,37 @@
 #include "matroska/KaxBlockData.h"
 #include "matroska/KaxContexts.h"
 #include "matroska/KaxBlock.h"
+#include "matroska/KaxDefines.h"
 
 using namespace LIBEBML_NAMESPACE;
 
 START_LIBMATROSKA_NAMESPACE
 
-const EbmlSemantic KaxSlices_ContextList[1] =
-{
-	EbmlSemantic(false, false,  KaxTimeSlice::ClassInfos),
-};
+DEFINE_START_SEMANTIC(KaxSlices)
+DEFINE_SEMANTIC_ITEM(false, false, KaxTimeSlice)
+DEFINE_END_SEMANTIC(KaxSlices)
 
-const EbmlSemantic KaxTimeSlice_ContextList[5] =
-{
-	EbmlSemantic(false, true,  KaxSliceLaceNumber::ClassInfos),
-	EbmlSemantic(false, true,  KaxSliceFrameNumber::ClassInfos),
-	EbmlSemantic(false, true,  KaxSliceBlockAddID::ClassInfos),
-	EbmlSemantic(false, true,  KaxSliceDelay::ClassInfos),
-	EbmlSemantic(false, true,  KaxSliceDuration::ClassInfos),
-};
+DEFINE_START_SEMANTIC(KaxTimeSlice)
+DEFINE_SEMANTIC_ITEM(false, true, KaxSliceLaceNumber)
+DEFINE_SEMANTIC_ITEM(false, true, KaxSliceFrameNumber)
+DEFINE_SEMANTIC_ITEM(false, true, KaxSliceBlockAddID)
+DEFINE_SEMANTIC_ITEM(false, true, KaxSliceDelay)
+DEFINE_SEMANTIC_ITEM(false, true, KaxSliceDuration)
+DEFINE_END_SEMANTIC(KaxTimeSlice)
 
-EbmlId KaxReferencePriority_TheId(0xFA, 1);
-EbmlId KaxReferenceBlock_TheId   (0xFB, 1);
-EbmlId KaxSlices_TheId           (0x8E, 1);
-EbmlId KaxTimeSlice_TheId        (0xE8, 1);
-EbmlId KaxSliceLaceNumber_TheId  (0xCC, 1);
-EbmlId KaxSliceFrameNumber_TheId (0xCD, 1);
-EbmlId KaxSliceBlockAddID_TheId  (0xCB, 1);
-EbmlId KaxSliceDelay_TheId       (0xCE, 1);
-EbmlId KaxSliceDuration_TheId    (0xCF, 1);
+DEFINE_MKX_UINTEGER_DEF (KaxReferencePriority, 0xFA, 1, KaxBlockGroup, "FlagReferenced", 0);
+DEFINE_MKX_SINTEGER_CONS(KaxReferenceBlock,    0xFB, 1, KaxBlockGroup, "ReferenceBlock");
+DEFINE_MKX_MASTER       (KaxSlices,            0x8E, 1, KaxBlockGroup, "Slices");
+DEFINE_MKX_MASTER       (KaxTimeSlice,         0xE8, 1, KaxSlices, "TimeSlice");
+DEFINE_MKX_UINTEGER_DEF (KaxSliceLaceNumber,   0xCC, 1, KaxTimeSlice, "SliceLaceNumber", 0);
+DEFINE_MKX_UINTEGER_DEF (KaxSliceFrameNumber,  0xCD, 1, KaxTimeSlice, "SliceFrameNumber", 0);
+DEFINE_MKX_UINTEGER_DEF (KaxSliceBlockAddID,   0xCB, 1, KaxTimeSlice, "SliceBlockAddID", 0);
+DEFINE_MKX_UINTEGER     (KaxSliceDelay,        0xCE, 1, KaxTimeSlice, "SliceDelay");
+DEFINE_MKX_UINTEGER_DEF (KaxSliceDuration,     0xCF, 1, KaxTimeSlice, "SliceDuration", 0);
 #if MATROSKA_VERSION >= 2
-EbmlId KaxReferenceVirtual_TheId (0xFD, 1);
-#endif // MATROSKA_VERSION
+DEFINE_MKX_SINTEGER     (KaxReferenceVirtual,  0xFD, 1, KaxBlockGroup, "ReferenceVirtual");
+#endif
 
-const EbmlSemanticContext KaxReferencePriority_Context = EbmlSemanticContext(0, NULL, &KaxBlockGroup_Context, *GetKaxGlobal_Context, &KaxReferencePriority::ClassInfos);
-const EbmlSemanticContext KaxReferenceBlock_Context = EbmlSemanticContext(0, NULL, &KaxBlockGroup_Context, *GetKaxGlobal_Context, &KaxReferenceBlock::ClassInfos);
-const EbmlSemanticContext KaxSlices_Context = EbmlSemanticContext(countof(KaxSlices_ContextList), KaxSlices_ContextList, &KaxBlockGroup_Context, *GetKaxGlobal_Context, &KaxSlices::ClassInfos);
-const EbmlSemanticContext KaxTimeSlice_Context = EbmlSemanticContext(countof(KaxTimeSlice_ContextList), KaxTimeSlice_ContextList, &KaxSlices_Context, *GetKaxGlobal_Context, &KaxTimeSlice::ClassInfos);
-const EbmlSemanticContext KaxSliceLaceNumber_Context = EbmlSemanticContext(0, NULL, &KaxTimeSlice_Context, *GetKaxGlobal_Context, &KaxSliceLaceNumber::ClassInfos);
-const EbmlSemanticContext KaxSliceFrameNumber_Context = EbmlSemanticContext(0, NULL, &KaxTimeSlice_Context, *GetKaxGlobal_Context, &KaxSliceFrameNumber::ClassInfos);
-const EbmlSemanticContext KaxSliceBlockAddID_Context = EbmlSemanticContext(0, NULL, &KaxTimeSlice_Context, *GetKaxGlobal_Context, &KaxSliceBlockAddID::ClassInfos);
-const EbmlSemanticContext KaxSliceDelay_Context = EbmlSemanticContext(0, NULL, &KaxTimeSlice_Context, *GetKaxGlobal_Context, &KaxSliceDelay::ClassInfos);
-const EbmlSemanticContext KaxSliceDuration_Context = EbmlSemanticContext(0, NULL, &KaxTimeSlice_Context, *GetKaxGlobal_Context, &KaxSliceDuration::ClassInfos);
-#if MATROSKA_VERSION >= 2
-const EbmlSemanticContext KaxReferenceVirtual_Context = EbmlSemanticContext(0, NULL, &KaxBlockGroup_Context, *GetKaxGlobal_Context, &KaxReferenceVirtual::ClassInfos);
-#endif // MATROSKA_VERSION
-
-const EbmlCallbacks KaxReferencePriority::ClassInfos(KaxReferencePriority::Create, KaxReferencePriority_TheId, "FlagReferenced", KaxReferencePriority_Context);
-const EbmlCallbacks KaxReferenceBlock::ClassInfos(KaxReferenceBlock::Create, KaxReferenceBlock_TheId, "ReferenceBlock", KaxReferenceBlock_Context);
-const EbmlCallbacks KaxSlices::ClassInfos(KaxSlices::Create, KaxSlices_TheId, "Slices", KaxSlices_Context);
-const EbmlCallbacks KaxTimeSlice::ClassInfos(KaxTimeSlice::Create, KaxTimeSlice_TheId, "TimeSlice", KaxTimeSlice_Context);
-const EbmlCallbacks KaxSliceLaceNumber::ClassInfos(KaxSliceLaceNumber::Create, KaxSliceLaceNumber_TheId, "SliceLaceNumber", KaxSliceLaceNumber_Context);
-const EbmlCallbacks KaxSliceFrameNumber::ClassInfos(KaxSliceFrameNumber::Create, KaxSliceFrameNumber_TheId, "SliceFrameNumber", KaxSliceFrameNumber_Context);
-const EbmlCallbacks KaxSliceBlockAddID::ClassInfos(KaxSliceBlockAddID::Create, KaxSliceBlockAddID_TheId, "SliceBlockAddID", KaxSliceBlockAddID_Context);
-const EbmlCallbacks KaxSliceDelay::ClassInfos(KaxSliceDelay::Create, KaxSliceDelay_TheId, "SliceDelay", KaxSliceDelay_Context);
-const EbmlCallbacks KaxSliceDuration::ClassInfos(KaxSliceDuration::Create, KaxSliceDuration_TheId, "SliceDuration", KaxSliceDuration_Context);
-#if MATROSKA_VERSION >= 2
-const EbmlCallbacks KaxReferenceVirtual::ClassInfos(KaxReferenceVirtual::Create, KaxReferenceVirtual_TheId, "ReferenceVirtual", KaxReferenceVirtual_Context);
-#endif // MATROSKA_VERSION
-
-KaxSlices::KaxSlices()
- :EbmlMaster(KaxSlices_Context)
-{}
-
-KaxTimeSlice::KaxTimeSlice()
- :EbmlMaster(KaxTimeSlice_Context)
-{}
 
 const KaxBlockBlob & KaxReferenceBlock::RefBlock() const
 {
@@ -107,14 +73,28 @@ const KaxBlockBlob & KaxReferenceBlock::RefBlock() const
 	return *RefdBlock;
 }
 
-uint64 KaxReferenceBlock::UpdateSize(bool bSaveDefault, bool bForceRender)
+KaxReferenceBlock::KaxReferenceBlock(EBML_EXTRA_DEF)
+:EBML_DEF_SINTEGER(KaxReferenceBlock)EBML_DEF_SEP
+RefdBlock(NULL)
+,ParentBlock(NULL)
+{
+    bTimecodeSet = false;
+}
+
+KaxReferenceBlock::KaxReferenceBlock(const KaxReferenceBlock & ElementToClone)
+:EbmlSInteger(ElementToClone)
+,bTimecodeSet(ElementToClone.bTimecodeSet)
+{
+}
+
+filepos_t KaxReferenceBlock::UpdateSize(bool bSaveDefault, bool bForceRender)
 {
 	if (!bTimecodeSet) {
 		assert(RefdBlock != NULL);
 		assert(ParentBlock != NULL);
 
 		const KaxInternalBlock &block = *RefdBlock;
-		Value = (int64(block.GlobalTimecode()) - int64(ParentBlock->GlobalTimecode())) / int64(ParentBlock->GlobalTimecodeScale());
+		*static_cast<EbmlSInteger*>(this) = (int64(block.GlobalTimecode()) - int64(ParentBlock->GlobalTimecode())) / int64(ParentBlock->GlobalTimecodeScale());
 	}
 	return EbmlSInteger::UpdateSize(bSaveDefault, bForceRender);
 }
@@ -124,7 +104,7 @@ void KaxReferenceBlock::SetReferencedBlock(const KaxBlockBlob * aRefdBlock)
 	assert(RefdBlock == NULL);
 	assert(aRefdBlock != NULL);
 	RefdBlock = aRefdBlock; 
-	bValueIsSet = true;
+	SetValueIsSet();
 }
 
 void KaxReferenceBlock::SetReferencedBlock(const KaxBlockGroup & aRefdBlock)
@@ -132,7 +112,7 @@ void KaxReferenceBlock::SetReferencedBlock(const KaxBlockGroup & aRefdBlock)
 	KaxBlockBlob *block_blob = new KaxBlockBlob(BLOCK_BLOB_NO_SIMPLE);
 	block_blob->SetBlockGroup(*const_cast<KaxBlockGroup*>(&aRefdBlock));
 	RefdBlock = block_blob; 
-	bValueIsSet = true;
+	SetValueIsSet();
 }
 
 END_LIBMATROSKA_NAMESPACE

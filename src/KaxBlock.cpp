@@ -3,7 +3,7 @@
 **
 ** <file/class description>
 **
-** Copyright (C) 2002-2005 Steve Lhomme.  All rights reserved.
+** Copyright (C) 2002-2010 Steve Lhomme.  All rights reserved.
 **
 ** This library is free software; you can redistribute it and/or
 ** modify it under the terms of the GNU Lesser General Public
@@ -39,79 +39,48 @@
 #include "matroska/KaxContexts.h"
 #include "matroska/KaxBlockData.h"
 #include "matroska/KaxCluster.h"
+#include "matroska/KaxDefines.h"
 
 START_LIBMATROSKA_NAMESPACE
 
-#if MATROSKA_VERSION == 1
-const EbmlSemantic KaxBlockGroup_ContextList[6] =
-#else // MATROSKA_VERSION
-const EbmlSemantic KaxBlockGroup_ContextList[9] =
-#endif // MATROSKA_VERSION
-{
-	EbmlSemantic(true,  true,  KaxBlock::ClassInfos),
+DEFINE_START_SEMANTIC(KaxBlockGroup)
+DEFINE_SEMANTIC_ITEM(true, true, KaxBlock)
 #if MATROSKA_VERSION >= 2
-	EbmlSemantic(false, true,  KaxBlockVirtual::ClassInfos),
+DEFINE_SEMANTIC_ITEM(false, true, KaxBlockVirtual)
 #endif // MATROSKA_VERSION
-	EbmlSemantic(false, true,  KaxBlockDuration::ClassInfos),
-	EbmlSemantic(false, true,  KaxSlices::ClassInfos),
-	EbmlSemantic(true,  true,  KaxReferencePriority::ClassInfos),
-	EbmlSemantic(false, false, KaxReferenceBlock::ClassInfos),
+DEFINE_SEMANTIC_ITEM(false, true, KaxBlockDuration)
+DEFINE_SEMANTIC_ITEM(false, true, KaxSlices)
+DEFINE_SEMANTIC_ITEM(true, true, KaxReferencePriority)
+DEFINE_SEMANTIC_ITEM(false, false, KaxReferenceBlock)
 #if MATROSKA_VERSION >= 2
-	EbmlSemantic(false, true,  KaxReferenceVirtual::ClassInfos),
-	EbmlSemantic(false, true,  KaxCodecState::ClassInfos),
+DEFINE_SEMANTIC_ITEM(false, true, KaxReferenceVirtual)
+DEFINE_SEMANTIC_ITEM(false, true, KaxCodecState)
 #endif // MATROSKA_VERSION
-	EbmlSemantic(false, true,  KaxBlockAdditions::ClassInfos),
-};
+DEFINE_SEMANTIC_ITEM(false, true, KaxBlockAdditions)
+DEFINE_END_SEMANTIC(KaxBlockGroup)
 
-const EbmlSemantic KaxBlockAdditions_ContextList[1] =
-{
-	EbmlSemantic(true,  false,  KaxBlockMore::ClassInfos)
-};
+DEFINE_START_SEMANTIC(KaxBlockAdditions)
+DEFINE_SEMANTIC_ITEM(true,  false,  KaxBlockMore)
+DEFINE_END_SEMANTIC(KaxBlockAdditions)
 
-const EbmlSemantic KaxBlockMore_ContextList[2] =
-{
-	EbmlSemantic(true,  true,  KaxBlockAddID::ClassInfos),
-	EbmlSemantic(true,  true,  KaxBlockAdditional::ClassInfos)
-};
+DEFINE_START_SEMANTIC(KaxBlockMore)
+DEFINE_SEMANTIC_ITEM(true, true, KaxBlockAddID)
+DEFINE_SEMANTIC_ITEM(true,  true,  KaxBlockAdditional)
+DEFINE_END_SEMANTIC(KaxBlockMore)
 
-EbmlId KaxBlockGroup_TheId     (0xA0, 1);
-EbmlId KaxBlock_TheId          (0xA1, 1);
-EbmlId KaxSimpleBlock_TheId    (0xA3, 1);
-EbmlId KaxBlockDuration_TheId  (0x9B, 1);
+DEFINE_MKX_MASTER_CONS (KaxBlockGroup,       0xA0, 1, KaxCluster, "BlockGroup");
+DEFINE_MKX_BINARY_CONS (KaxBlock,            0xA1, 1, KaxBlockGroup, "Block");
+DEFINE_MKX_UINTEGER    (KaxBlockDuration,    0x9B, 1, KaxBlockGroup, "BlockDuration");
 #if MATROSKA_VERSION >= 2
-EbmlId KaxBlockVirtual_TheId   (0xA2, 1);
-EbmlId KaxCodecState_TheId     (0xA4, 1);
-#endif // MATROSKA_VERSION
-EbmlId KaxBlockAdditions_TheId (0x75A1, 2);
-EbmlId KaxBlockMore_TheId      (0xA6, 1);
-EbmlId KaxBlockAddID_TheId     (0xEE, 1);
-EbmlId KaxBlockAdditional_TheId(0xA5, 1);
+DEFINE_MKX_BINARY_CONS (KaxSimpleBlock,      0xA3, 1, KaxCluster, "SimpleBlock");
+DEFINE_MKX_BINARY_CONS (KaxBlockVirtual,     0xA2, 1, KaxBlockGroup, "BlockVirtual");
+DEFINE_MKX_BINARY      (KaxCodecState,       0xA4, 1, KaxBlockGroup, "CodecState");
+#endif
+DEFINE_MKX_MASTER      (KaxBlockAdditions, 0x75A1, 2, KaxBlockGroup, "BlockAdditions");
+DEFINE_MKX_MASTER      (KaxBlockMore,        0xA6, 1, KaxBlockAdditions, "BlockMore");
+DEFINE_MKX_UINTEGER_DEF(KaxBlockAddID,       0xEE, 1, KaxBlockMore, "BlockAddID", 1);
+DEFINE_MKX_BINARY      (KaxBlockAdditional,  0xA5, 1, KaxBlockMore, "BlockAdditional");
 
-const EbmlSemanticContext KaxBlockGroup_Context = EbmlSemanticContext(countof(KaxBlockGroup_ContextList), KaxBlockGroup_ContextList, &KaxCluster_Context, *GetKaxGlobal_Context, &KaxBlockGroup::ClassInfos);
-const EbmlSemanticContext KaxBlock_Context = EbmlSemanticContext(0, NULL, &KaxBlockGroup_Context, *GetKaxGlobal_Context, &KaxBlock::ClassInfos);
-const EbmlSemanticContext KaxBlockDuration_Context = EbmlSemanticContext(0, NULL, &KaxBlockGroup_Context, *GetKaxGlobal_Context, &KaxBlockDuration::ClassInfos);
-#if MATROSKA_VERSION >= 2
-const EbmlSemanticContext KaxSimpleBlock_Context = EbmlSemanticContext(0, NULL, &KaxCluster_Context, *GetKaxGlobal_Context, &KaxSimpleBlock::ClassInfos);
-const EbmlSemanticContext KaxBlockVirtual_Context = EbmlSemanticContext(0, NULL, &KaxBlockGroup_Context, *GetKaxGlobal_Context, &KaxBlockVirtual::ClassInfos);
-const EbmlSemanticContext KaxCodecState_Context = EbmlSemanticContext(0, NULL, &KaxBlockGroup_Context, *GetKaxGlobal_Context, &KaxCodecState::ClassInfos);
-#endif // MATROSKA_VERSION
-const EbmlSemanticContext KaxBlockAdditions_Context = EbmlSemanticContext(countof(KaxBlockAdditions_ContextList), KaxBlockAdditions_ContextList, &KaxBlockGroup_Context, *GetKaxGlobal_Context, &KaxBlockAdditions::ClassInfos);
-const EbmlSemanticContext KaxBlockMore_Context = EbmlSemanticContext(countof(KaxBlockMore_ContextList), KaxBlockMore_ContextList, &KaxBlockAdditions_Context, *GetKaxGlobal_Context, &KaxBlockMore::ClassInfos);
-const EbmlSemanticContext KaxBlockAddID_Context = EbmlSemanticContext(0, NULL, &KaxBlockMore_Context, *GetKaxGlobal_Context, &KaxBlockAddID::ClassInfos);
-const EbmlSemanticContext KaxBlockAdditional_Context = EbmlSemanticContext(0, NULL, &KaxBlockMore_Context, *GetKaxGlobal_Context, &KaxBlockAdditional::ClassInfos);
-
-const EbmlCallbacks KaxBlockGroup::ClassInfos(KaxBlockGroup::Create, KaxBlockGroup_TheId, "BlockGroup", KaxBlockGroup_Context);
-const EbmlCallbacks KaxBlock::ClassInfos(KaxBlock::Create, KaxBlock_TheId, "Block", KaxBlock_Context);
-const EbmlCallbacks KaxBlockDuration::ClassInfos(KaxBlockDuration::Create, KaxBlockDuration_TheId, "BlockDuration", KaxBlockDuration_Context);
-#if MATROSKA_VERSION >= 2
-const EbmlCallbacks KaxSimpleBlock::ClassInfos(KaxSimpleBlock::Create, KaxSimpleBlock_TheId, "SimpleBlock", KaxSimpleBlock_Context);
-const EbmlCallbacks KaxBlockVirtual::ClassInfos(KaxBlockVirtual::Create, KaxBlockVirtual_TheId, "BlockVirtual", KaxBlockVirtual_Context);
-const EbmlCallbacks KaxCodecState::ClassInfos(KaxCodecState::Create, KaxCodecState_TheId, "CodecState", KaxCodecState_Context);
-#endif // MATROSKA_VERSION
-const EbmlCallbacks KaxBlockAdditions::ClassInfos(KaxBlockAdditions::Create, KaxBlockAdditions_TheId, "BlockAdditions", KaxBlockAdditions_Context);
-const EbmlCallbacks KaxBlockMore::ClassInfos(KaxBlockMore::Create, KaxBlockMore_TheId, "BlockMore", KaxBlockMore_Context);
-const EbmlCallbacks KaxBlockAddID::ClassInfos(KaxBlockAddID::Create, KaxBlockAddID_TheId, "BlockAddID", KaxBlockAddID_Context);
-const EbmlCallbacks KaxBlockAdditional::ClassInfos(KaxBlockAdditional::Create, KaxBlockAdditional_TheId, "BlockAdditional", KaxBlockAdditional_Context);
 
 DataBuffer * DataBuffer::Clone()
 {
@@ -134,7 +103,7 @@ SimpleDataBuffer::SimpleDataBuffer(const SimpleDataBuffer & ToClone)
 
 bool KaxInternalBlock::ValidateSize() const
 {
-	return (Size >= 4); /// for the moment
+	return (GetSize() >= 4); /// for the moment
 }
 
 KaxInternalBlock::~KaxInternalBlock()
@@ -167,18 +136,10 @@ KaxBlockGroup::~KaxBlockGroup()
 //NOTE("KaxBlockGroup::~KaxBlockGroup");
 }
 
-KaxBlockGroup::KaxBlockGroup()
- :EbmlMaster(KaxBlockGroup_Context)
+KaxBlockGroup::KaxBlockGroup(EBML_EXTRA_DEF)
+ :EbmlMaster(EBML_CLASS_SEMCONTEXT(KaxBlockGroup) EBML_DEF_SEP EBML_EXTRA_CALL)
  ,ParentCluster(NULL)
  ,ParentTrack(NULL)
-{}
-
-KaxBlockAdditions::KaxBlockAdditions()
- :EbmlMaster(KaxBlockAdditions_Context)
-{}
-
-KaxBlockMore::KaxBlockMore()
- :EbmlMaster(KaxBlockMore_Context)
 {}
 
 /*!
@@ -188,7 +149,7 @@ KaxBlockMore::KaxBlockMore()
 */
 bool KaxInternalBlock::AddFrame(const KaxTrackEntry & track, uint64 timecode, DataBuffer & buffer, LacingType lacing, bool invisible)
 {
-	bValueIsSet = true;
+	SetValueIsSet();
 	if (myBuffers.size() == 0) {
 		// first frame
 		Timecode = timecode;
@@ -228,7 +189,7 @@ LacingType KaxInternalBlock::GetBestLacingType() const {
 			SameSize = false;
 		XiphLacingSize += myBuffers[i]->Size() / 255 + 1;
 	}
-	EbmlLacingSize += CodedSizeLength(myBuffers[0]->Size(), 0, bSizeIsFinite);
+	EbmlLacingSize += CodedSizeLength(myBuffers[0]->Size(), 0, IsFiniteSize());
 	for (i = 1; i < (int)myBuffers.size() - 1; i++)
 		EbmlLacingSize += CodedSizeLengthSigned(int64(myBuffers[i]->Size()) - int64(myBuffers[i - 1]->Size()), 0);
 	if (SameSize)
@@ -239,23 +200,23 @@ LacingType KaxInternalBlock::GetBestLacingType() const {
 		return LACING_EBML;
 }
 
-uint64 KaxInternalBlock::UpdateSize(bool bSaveDefault, bool bForceRender)
+filepos_t KaxInternalBlock::UpdateSize(bool bSaveDefault, bool bForceRender)
 {
 	LacingType LacingHere;
-	assert(Data == NULL); // Data is not used for KaxInternalBlock
+    assert(EbmlBinary::GetBuffer() == NULL); // Data is not used for KaxInternalBlock
 	assert(TrackNumber < 0x4000); // no more allowed for the moment
 	unsigned int i;
 
 	// compute the final size of the data
 	switch (myBuffers.size()) {
 		case 0:
-			Size = 0;
+			SetSize_(0);
 			break;
 		case 1:
-			Size = 4 + myBuffers[0]->Size();
+			SetSize_(4 + myBuffers[0]->Size());
 			break;
 		default:
-			Size = 4 + 1; // 1 for the lacing head
+			SetSize_(4 + 1); // 1 for the lacing head
 			if (mLacing == LACING_AUTO)
 				LacingHere = GetBestLacingType();
 			else
@@ -264,33 +225,32 @@ uint64 KaxInternalBlock::UpdateSize(bool bSaveDefault, bool bForceRender)
 			{
 			case LACING_XIPH:
 				for (i=0; i<myBuffers.size()-1; i++) {
-					Size += myBuffers[i]->Size() + (myBuffers[i]->Size() / 0xFF + 1);
+					SetSize_(GetSize() + myBuffers[i]->Size() + (myBuffers[i]->Size() / 0xFF + 1));
 				}
 				break;
 			case LACING_EBML:
-				Size += myBuffers[0]->Size() + CodedSizeLength(myBuffers[0]->Size(), 0, bSizeIsFinite);
+				SetSize_(GetSize() + myBuffers[0]->Size() + CodedSizeLength(myBuffers[0]->Size(), 0, IsFiniteSize()));
 				for (i=1; i<myBuffers.size()-1; i++) {
-					Size += myBuffers[i]->Size() 
-						+ CodedSizeLengthSigned(int64(myBuffers[i]->Size()) - int64(myBuffers[i-1]->Size()), 0);;
+					SetSize_(GetSize() + myBuffers[i]->Size() + CodedSizeLengthSigned(int64(myBuffers[i]->Size()) - int64(myBuffers[i-1]->Size()), 0));
 				}
 				break;
 			case LACING_FIXED:
 				for (i=0; i<myBuffers.size()-1; i++) {
-					Size += myBuffers[i]->Size();
+					SetSize_(GetSize() + myBuffers[i]->Size());
 				}
 				break;
 			default:
 				assert(0);
 			}
 			// Size of the last frame (not in lace)
-			Size += myBuffers[i]->Size();
+			SetSize_(GetSize() + myBuffers[i]->Size());
 			break;
 	}
 
 	if (TrackNumber >= 0x80)
-		Size++; // the size will be coded with one more octet
+		SetSize_(GetSize() + 1); // the size will be coded with one more octet
 
-	return Size;
+	return GetSize();
 }
 
 #if MATROSKA_VERSION >= 2
@@ -300,17 +260,33 @@ KaxBlockVirtual::KaxBlockVirtual(const KaxBlockVirtual & ElementToClone)
  ,TrackNumber(ElementToClone.TrackNumber)
  ,ParentCluster(ElementToClone.ParentCluster) ///< \todo not exactly
 {
-	Data = DataBlock;
+    SetBuffer(DataBlock,sizeof(DataBlock));
+    SetValueIsSet(false);
 }
 
-uint64 KaxBlockVirtual::UpdateSize(bool bSaveDefault, bool bForceRender)
+KaxBlockVirtual::KaxBlockVirtual(EBML_EXTRA_DEF)
+:EBML_DEF_BINARY(KaxBlockVirtual)EBML_DEF_SEP ParentCluster(NULL)
+{
+    SetBuffer(DataBlock,sizeof(DataBlock));
+    SetValueIsSet(false);
+}
+
+KaxBlockVirtual::~KaxBlockVirtual()
+{
+    if(GetBuffer() == DataBlock)
+        SetBuffer( NULL, 0 ); 
+}
+
+filepos_t KaxBlockVirtual::UpdateSize(bool bSaveDefault, bool bForceRender)
 {
 	assert(TrackNumber < 0x4000);
-	binary *cursor = Data;
+	binary *cursor = EbmlBinary::GetBuffer();
 	// fill data
 	if (TrackNumber < 0x80) {
+        assert(GetSize() >= 4);
 		*cursor++ = TrackNumber | 0x80; // set the first bit to 1 
 	} else {
+        assert(GetSize() >= 5);
 		*cursor++ = (TrackNumber >> 8) | 0x40; // set the second bit to 1
 		*cursor++ = TrackNumber & 0xFF;
 	}
@@ -323,7 +299,7 @@ uint64 KaxBlockVirtual::UpdateSize(bool bSaveDefault, bool bForceRender)
 
 	*cursor++ = 0; // flags
 
-	return Size;
+	return GetSize();
 }
 #endif // MATROSKA_VERSION
 
@@ -331,7 +307,7 @@ uint64 KaxBlockVirtual::UpdateSize(bool bSaveDefault, bool bForceRender)
 	\todo more optimisation is possible (render the Block head and don't copy the buffer in memory, care should be taken with the allocation of Data)
 	\todo the actual timecode to write should be retrieved from the Cluster from here
 */
-uint32 KaxInternalBlock::RenderData(IOCallback & output, bool bForceRender, bool bSaveDefault)
+filepos_t KaxInternalBlock::RenderData(IOCallback & output, bool bForceRender, bool bSaveDefault)
 {
 	if (myBuffers.size() == 0) {
 		return 0;
@@ -341,15 +317,15 @@ uint32 KaxInternalBlock::RenderData(IOCallback & output, bool bForceRender, bool
 		unsigned int i;
 
 		if (myBuffers.size() == 1) {
-			Size = 4;
+			SetSize_(4);
 			mLacing = LACING_NONE;
 		} else {
 			if (mLacing == LACING_NONE)
 				mLacing = LACING_EBML; // supposedly the best of all
-			Size = 4 + 1; // 1 for the lacing head (number of laced elements)
+			SetSize_(4 + 1); // 1 for the lacing head (number of laced elements)
 		}
 		if (TrackNumber > 0x80)
-			Size++;
+			SetSize_(GetSize() + 1);
 
 		// write Block Head
 		if (TrackNumber < 0x80) {
@@ -416,12 +392,12 @@ uint32 KaxInternalBlock::RenderData(IOCallback & output, bool bForceRender, bool
 				uint16 tmpSize = myBuffers[i]->Size();
 				while (tmpSize >= 0xFF) {
 					output.writeFully(&tmpValue, 1);
-					Size++;
+					SetSize_(GetSize() + 1);
 					tmpSize -= 0xFF;
 				}
 				tmpValue = binary(tmpSize);
 				output.writeFully(&tmpValue, 1);
-				Size++;
+				SetSize_(GetSize() + 1);
 			}
 			break;
 		case LACING_EBML:
@@ -436,12 +412,12 @@ uint32 KaxInternalBlock::RenderData(IOCallback & output, bool bForceRender, bool
 
 				_Size = myBuffers[0]->Size();
 
-				_CodedSize = CodedSizeLength(_Size, 0, bSizeIsFinite);
+				_CodedSize = CodedSizeLength(_Size, 0, IsFiniteSize());
 
 				// first size in the lace is not a signed
 				CodedValueLength(_Size, _CodedSize, _FinalHead);
 				output.writeFully(_FinalHead, _CodedSize);
-				Size += _CodedSize;
+				SetSize_(GetSize() + _CodedSize);
 
 				// set the size of each member in the lace
 				for (i=1; i<myBuffers.size()-1; i++) {
@@ -449,7 +425,7 @@ uint32 KaxInternalBlock::RenderData(IOCallback & output, bool bForceRender, bool
 					_CodedSize = CodedSizeLengthSigned(_Size, 0);
 					CodedValueLengthSigned(_Size, _CodedSize, _FinalHead);
 					output.writeFully(_FinalHead, _CodedSize);
-					Size += _CodedSize;
+					SetSize_(GetSize() + _CodedSize);
 				}
 			}
 			break;
@@ -467,11 +443,11 @@ uint32 KaxInternalBlock::RenderData(IOCallback & output, bool bForceRender, bool
 		// put the data of each frame
 		for (i=0; i<myBuffers.size(); i++) {
 			output.writeFully(myBuffers[i]->Buffer(), myBuffers[i]->Size());
-			Size += myBuffers[i]->Size();
+			SetSize_(GetSize() + myBuffers[i]->Size());
 		}
 	}
 
-	return Size;
+	return GetSize();
 }
 
 uint64 KaxInternalBlock::ReadInternalHead(IOCallback & input)
@@ -510,16 +486,16 @@ uint64 KaxInternalBlock::ReadInternalHead(IOCallback & input)
 /*!
 	\todo better zero copy handling
 */
-uint64 KaxInternalBlock::ReadData(IOCallback & input, ScopeMode ReadFully)
+filepos_t KaxInternalBlock::ReadData(IOCallback & input, ScopeMode ReadFully)
 {
-	uint64 Result;
+	filepos_t Result;
 
 	FirstFrameLocation = input.getFilePointer(); // will be updated accordingly below
 
 	if (ReadFully == SCOPE_ALL_DATA)
 	{
 		Result = EbmlBinary::ReadData(input, ReadFully);
-		binary *cursor = Data;
+        binary *cursor = EbmlBinary::GetBuffer();
 		uint8 BlockHeadSize = 4;
 
 		// update internal values
@@ -543,7 +519,7 @@ uint64 KaxInternalBlock::ReadData(IOCallback & input, ScopeMode ReadFully)
 		bLocalTimecodeUsed = true;
 		cursor += 2;
 
-		if (EbmlId(*this) == KaxSimpleBlock::ClassInfos.GlobalId) {
+		if (EbmlId(*this) == EBML_ID(KaxSimpleBlock)) {
 			bIsKeyframe = (*cursor & 0x80) != 0;
 			bIsDiscardable = (*cursor & 0x01) != 0;
 		}
@@ -552,14 +528,14 @@ uint64 KaxInternalBlock::ReadData(IOCallback & input, ScopeMode ReadFully)
 
 		// put all Frames in the list
 		if (mLacing == LACING_NONE) {
-			FirstFrameLocation += cursor - Data;
-			DataBuffer * soloFrame = new DataBuffer(cursor, Size - BlockHeadSize);
+			FirstFrameLocation += cursor - EbmlBinary::GetBuffer();
+			DataBuffer * soloFrame = new DataBuffer(cursor, GetSize() - BlockHeadSize);
 			myBuffers.push_back(soloFrame);
 			SizeList.resize(1);
-			SizeList[0] = Size - BlockHeadSize;
+			SizeList[0] = GetSize() - BlockHeadSize;
 		} else {
 			// read the number of frames in the lace
-			uint32 LastBufferSize = Size - BlockHeadSize - 1; // 1 for number of frame
+			uint32 LastBufferSize = GetSize() - BlockHeadSize - 1; // 1 for number of frame
 			uint8 FrameNum = *cursor++; // number of frames in the lace - 1
 			// read the list of frame sizes
 			uint8 Index;
@@ -611,7 +587,7 @@ uint64 KaxInternalBlock::ReadData(IOCallback & input, ScopeMode ReadFully)
 				assert(0);
 			}
 
-			FirstFrameLocation += cursor - Data;
+			FirstFrameLocation += cursor - EbmlBinary::GetBuffer();
 
 			for (Index=0; Index<=FrameNum; Index++) {
 				DataBuffer * lacedFrame = new DataBuffer(cursor, SizeList[Index]);
@@ -619,7 +595,7 @@ uint64 KaxInternalBlock::ReadData(IOCallback & input, ScopeMode ReadFully)
 				cursor += SizeList[Index];
 			}
 		}
-		bValueIsSet = true;
+		SetValueIsSet();
 	}
 	else if (ReadFully == SCOPE_PARTIAL_DATA)
 	{
@@ -650,7 +626,7 @@ uint64 KaxInternalBlock::ReadData(IOCallback & input, ScopeMode ReadFully)
 		bLocalTimecodeUsed = true;
 		cursor += 2;
 
-		if (EbmlId(*this) == KaxSimpleBlock::ClassInfos.GlobalId) {
+		if (EbmlId(*this) == EBML_ID(KaxSimpleBlock)) {
 			bIsKeyframe = (*cursor & 0x80) != 0;
 			bIsDiscardable = (*cursor & 0x01) != 0;
 		}
@@ -668,7 +644,7 @@ uint64 KaxInternalBlock::ReadData(IOCallback & input, ScopeMode ReadFully)
 		// put all Frames in the list
 		if (mLacing != LACING_NONE) {
 			// read the number of frames in the lace
-			uint32 LastBufferSize = Size - BlockHeadSize - 1; // 1 for number of frame
+			uint32 LastBufferSize = GetSize() - BlockHeadSize - 1; // 1 for number of frame
 			uint8 FrameNum = _TempHead[0]; // number of frames in the lace - 1
 			// read the list of frame sizes
 			uint8 Index;
@@ -732,13 +708,13 @@ uint64 KaxInternalBlock::ReadData(IOCallback & input, ScopeMode ReadFully)
 			}
 		} else {
 			SizeList.resize(1);
-			SizeList[0] = Size - BlockHeadSize;
+			SizeList[0] = GetSize() - BlockHeadSize;
 		}
-		bValueIsSet = false;
-		Result = Size;
+		SetValueIsSet(false);
+		Result = GetSize();
 	} else {
-		bValueIsSet = false;
-		Result = Size;
+		SetValueIsSet(false);
+		Result = GetSize();
 	}
 
 	return Result;
@@ -824,14 +800,14 @@ bool KaxBlockGroup::AddFrame(const KaxTrackEntry & track, uint64 timecode, DataB
 uint64 KaxBlockGroup::GlobalTimecode() const
 {
 	assert(ParentCluster != NULL); // impossible otherwise
-	KaxInternalBlock & MyBlock = *static_cast<KaxBlock *>(this->FindElt(KaxBlock::ClassInfos));
+	KaxInternalBlock & MyBlock = *static_cast<KaxBlock *>(this->FindElt(EBML_INFO(KaxBlock)));
 	return MyBlock.GlobalTimecode();
 
 }
 
 uint16 KaxBlockGroup::TrackNumber() const
 {
-	KaxInternalBlock & MyBlock = *static_cast<KaxBlock *>(this->FindElt(KaxBlock::ClassInfos));
+	KaxInternalBlock & MyBlock = *static_cast<KaxBlock *>(this->FindElt(EBML_INFO(KaxBlock)));
 	return MyBlock.TrackNum();
 }
 
@@ -850,7 +826,7 @@ uint64 KaxInternalBlock::ClusterPosition() const
 unsigned int KaxBlockGroup::ReferenceCount() const
 {
 	unsigned int Result = 0;
-	KaxReferenceBlock * MyBlockAdds = static_cast<KaxReferenceBlock *>(FindFirstElt(KaxReferenceBlock::ClassInfos));
+	KaxReferenceBlock * MyBlockAdds = static_cast<KaxReferenceBlock *>(FindFirstElt(EBML_INFO(KaxReferenceBlock)));
 	if (MyBlockAdds != NULL) {
 		Result++;
 		while ((MyBlockAdds = static_cast<KaxReferenceBlock *>(FindNextElt(*MyBlockAdds))) != NULL)
@@ -863,7 +839,7 @@ unsigned int KaxBlockGroup::ReferenceCount() const
 
 const KaxReferenceBlock & KaxBlockGroup::Reference(unsigned int Index) const
 {
-	KaxReferenceBlock * MyBlockAdds = static_cast<KaxReferenceBlock *>(FindFirstElt(KaxReferenceBlock::ClassInfos));
+	KaxReferenceBlock * MyBlockAdds = static_cast<KaxReferenceBlock *>(FindFirstElt(EBML_INFO(KaxReferenceBlock)));
 	assert(MyBlockAdds != NULL); // call of a non existing reference
 	
 	while (Index != 0) {
@@ -876,7 +852,7 @@ const KaxReferenceBlock & KaxBlockGroup::Reference(unsigned int Index) const
 
 void KaxBlockGroup::ReleaseFrames()
 {
-	KaxInternalBlock & MyBlock = *static_cast<KaxBlock *>(this->FindElt(KaxBlock::ClassInfos));
+	KaxInternalBlock & MyBlock = *static_cast<KaxBlock *>(this->FindElt(EBML_INFO(KaxBlock)));
 	MyBlock.ReleaseFrames();
 }
 
@@ -897,13 +873,13 @@ void KaxBlockGroup::SetBlockDuration(uint64 TimeLength)
 {
 	assert(ParentTrack != NULL);
 	int64 scale = ParentTrack->GlobalTimecodeScale();
-	KaxBlockDuration & myDuration = *static_cast<KaxBlockDuration *>(FindFirstElt(KaxBlockDuration::ClassInfos, true));
+	KaxBlockDuration & myDuration = *static_cast<KaxBlockDuration *>(FindFirstElt(EBML_INFO(KaxBlockDuration), true));
 	*(static_cast<EbmlUInteger *>(&myDuration)) = TimeLength / uint64(scale);
 }
 
 bool KaxBlockGroup::GetBlockDuration(uint64 &TheTimecode) const
 {
-	KaxBlockDuration * myDuration = static_cast<KaxBlockDuration *>(FindElt(KaxBlockDuration::ClassInfos));
+	KaxBlockDuration * myDuration = static_cast<KaxBlockDuration *>(FindElt(EBML_INFO(KaxBlockDuration)));
 	if (myDuration == NULL) {
 		return false;
 	}
@@ -924,6 +900,10 @@ void KaxBlockGroup::SetParent(KaxCluster & aParentCluster) {
 	theBlock.SetParent( aParentCluster );
 }
 
+void KaxSimpleBlock::SetParent(KaxCluster & aParentCluster) {
+	KaxInternalBlock::SetParent( aParentCluster );
+}
+
 void KaxInternalBlock::SetParent(KaxCluster & aParentCluster)
 {
 	ParentCluster = &aParentCluster;
@@ -937,7 +917,7 @@ int64 KaxInternalBlock::GetDataPosition(size_t FrameNumber)
 {
 	int64 _Result = -1;
 
-	if (bValueIsSet && FrameNumber < SizeList.size())
+	if (ValueIsSet() && FrameNumber < SizeList.size())
 	{
 		_Result = FirstFrameLocation;
 	

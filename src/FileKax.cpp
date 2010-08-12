@@ -29,11 +29,13 @@
 
 /*!
     \file
-    \version \$Id: FileKax.cpp 640 2004-07-09 21:05:36Z mosu $
+    \version \$Id$
     \author Steve Lhomme     <robux4 @ users.sf.net>
 */
 //#include "StdInclude.h"
 #include "matroska/FileKax.h"
+#include "ebml/EbmlVersion.h"
+#include "ebml/EbmlContexts.h"
 //#include "Cluster.h"
 //#include "Track.h"
 //#include "Block.h"
@@ -114,7 +116,7 @@ void FileMatroska::Close(const uint32 aTimeLength)
 /*!
     \warning after rendering the head, some parameters are locked
 */
-uint32 FileMatroska::RenderHead(const std::string & aEncoderApp)
+filepos_t FileMatroska::RenderHead(const std::string & aEncoderApp)
 {
     try {
 	uint32 track_entries_size = 0;
@@ -141,7 +143,7 @@ uint32 FileMatroska::RenderHead(const std::string & aEncoderApp)
 	}
 
 	// Main Header
-	uint32 result = myMainHeader.Render(myFile, myStreamInfo);
+	filepos_t result = myMainHeader.Render(myFile, myStreamInfo);
 
 	// Track Entries
 	for (i=0; i<myTracks.size(); i++)
@@ -189,7 +191,7 @@ void FileMatroska::track_SetName(Track * aTrack, const std::string & aName)
     }
 }
 
-void FileMatroska::track_SetLaced(Track * aTrack, const bool bLaced)
+void FileMatroska::track_SetLaced(Track * aTrack, bool bLaced)
 {
     if (IsMyTrack(aTrack))
     {
@@ -198,7 +200,7 @@ void FileMatroska::track_SetLaced(Track * aTrack, const bool bLaced)
 }
 
 bool FileMatroska::AddFrame(Track * aTrack, const uint32 aTimecode, const binary *aFrame, const uint32 aFrameSize,
-					   const bool aKeyFrame, const bool aBFrame)
+					   bool aKeyFrame, bool aBFrame)
 {
     try {
 	// make sure we know that track
@@ -447,3 +449,17 @@ bool FileMatroska::ReadFrame(Track * & aTrack, uint32 & aTimecode, const binary 
 #endif // OLD
 
 END_LIBMATROSKA_NAMESPACE
+
+void matroska_init()
+{
+#if defined(HAVE_EBML2) || defined(HAS_EBML2)
+    ebml_init();
+#endif
+}
+
+void matroska_done()
+{
+#if defined(HAVE_EBML2) || defined(HAS_EBML2)
+    ebml_done();
+#endif
+}

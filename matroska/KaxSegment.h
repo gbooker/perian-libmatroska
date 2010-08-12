@@ -3,7 +3,7 @@
 **
 ** <file/class MATROSKA_DLL_API description>
 **
-** Copyright (C) 2002-2004 Steve Lhomme.  All rights reserved.
+** Copyright (C) 2002-2010 Steve Lhomme.  All rights reserved.
 **
 ** This file is part of libmatroska.
 **
@@ -37,21 +37,14 @@
 
 #include "matroska/KaxTypes.h"
 #include "ebml/EbmlMaster.h"
+#include "matroska/KaxDefines.h"
 
 using namespace LIBEBML_NAMESPACE;
 
 START_LIBMATROSKA_NAMESPACE
 
-class MATROSKA_DLL_API KaxSegment : public EbmlMaster {
+DECLARE_MKX_MASTER_CONS(KaxSegment)
 	public:
-		KaxSegment();
-		KaxSegment(const KaxSegment & ElementToClone);
-		static EbmlElement & Create() {return *(new KaxSegment);}
-		const EbmlCallbacks & Generic() const {return ClassInfos;}
-		static const EbmlCallbacks ClassInfos;
-		operator const EbmlId &() const {return ClassInfos.GlobalId;}
-		EbmlElement * Clone() const {return new KaxSegment(*this);}
-
 		/*!
 			\brief give the position of the element in the segment
 		*/

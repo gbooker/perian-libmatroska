@@ -3,7 +3,7 @@
 **
 ** <file/class description>
 **
-** Copyright (C) 2002-2004 Steve Lhomme.  All rights reserved.
+** Copyright (C) 2002-2010 Steve Lhomme.  All rights reserved.
 **
 ** This file is part of libmatroska.
 **
@@ -63,7 +63,7 @@ class MATROSKA_DLL_API FileMatroska {
 		FileMatroska(IOCallback & output);
 		~FileMatroska();
 #ifdef OLD
-	uint32 RenderHead(const std::string & aEncoderApp);
+	filepos_t RenderHead(const std::string & aEncoderApp);
 	uint32 ReadHead();
 	uint32 ReadTracks();
 	uint32 ReadCodec();
@@ -72,12 +72,12 @@ class MATROSKA_DLL_API FileMatroska {
 	inline void type_SetInfo(const std::string & aStr) {myMainHeader.type_SetInfo(aStr);}
 	inline void type_SetAds(const std::string & aStr) {myMainHeader.type_SetAds(aStr);}
 	inline void type_SetSize(const std::string & aStr) {myMainHeader.type_SetSize(aStr);}
-	inline void type_SetSize(const uint64 aSize) {myMainHeader.type_SetSize(aSize);}
+	inline void type_SetSize(uint64 aSize) {myMainHeader.type_SetSize(aSize);}
 
 	inline uint8 GetTrackNumber() const { return myTracks.size(); }
 
 	void track_SetName(Track * aTrack, const std::string & aName);
-	void track_SetLaced(Track * aTrack, const bool bLaced = true);
+	void track_SetLaced(Track * aTrack, bool bLaced = true);
 
 	Track * CreateTrack(const track_type aType);
 	inline Track * GetTrack(const uint8 aTrackNb) const
@@ -102,7 +102,7 @@ class MATROSKA_DLL_API FileMatroska {
 	    \return wether the frame has been added or not
 	*/
 	bool AddFrame(Track * aTrack, const uint32 aTimecode, const binary *aFrame, const uint32 aFrameSize,
-		     const bool aKeyFrame = true, const bool aBFrame = false);
+		     bool aKeyFrame = true, bool aBFrame = false);
 
 	/*!
 	    \return wether the frame has been read or not
@@ -148,5 +148,16 @@ class MATROSKA_DLL_API FileMatroska {
 };
 
 END_LIBMATROSKA_NAMESPACE
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+MATROSKA_DLL_API void matroska_init();
+MATROSKA_DLL_API void matroska_done();
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // FILE_KAX_HPP

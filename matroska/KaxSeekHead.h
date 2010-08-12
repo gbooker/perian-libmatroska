@@ -3,7 +3,7 @@
 **
 ** <file/class description>
 **
-** Copyright (C) 2002-2004 Steve Lhomme.  All rights reserved.
+** Copyright (C) 2002-2010 Steve Lhomme.  All rights reserved.
 **
 ** This file is part of libmatroska.
 **
@@ -29,7 +29,7 @@
 
 /*!
 	\file
-	\version \$Id: KaxSeekHead.h,v 1.7 2004/04/14 23:26:17 robux4 Exp $
+	\version \$Id$
 	\author Steve Lhomme     <robux4 @ users.sf.net>
 */
 #ifndef LIBMATROSKA_SEEK_HEAD_H
@@ -39,6 +39,7 @@
 #include "ebml/EbmlMaster.h"
 #include "ebml/EbmlBinary.h"
 #include "ebml/EbmlUInteger.h"
+#include "matroska/KaxDefines.h"
 
 using namespace LIBEBML_NAMESPACE;
 
@@ -47,16 +48,8 @@ START_LIBMATROSKA_NAMESPACE
 class KaxSegment;
 class KaxSeek;
 
-class MATROSKA_DLL_API KaxSeekHead : public EbmlMaster {
+DECLARE_MKX_MASTER(KaxSeekHead)
 	public:
-		KaxSeekHead();
-		KaxSeekHead(const KaxSeekHead & ElementToClone) :EbmlMaster(ElementToClone) {}
-		static EbmlElement & Create() {return *(new KaxSeekHead);}
-		const EbmlCallbacks & Generic() const {return ClassInfos;}
-		static const EbmlCallbacks ClassInfos;
-		operator const EbmlId &() const {return ClassInfos.GlobalId;}
-		EbmlElement * Clone() const {return new KaxSeekHead(*this);}
-
 		/*!
 			\brief add an element to index in the Meta Seek data
 			\note the element should already be written in the file
@@ -67,42 +60,19 @@ class MATROSKA_DLL_API KaxSeekHead : public EbmlMaster {
 		KaxSeek * FindNextOf(const KaxSeek &aPrev) const;
 };
 
-class MATROSKA_DLL_API KaxSeek : public EbmlMaster {
+DECLARE_MKX_MASTER(KaxSeek)
 	public:
-		KaxSeek();
-		KaxSeek(const KaxSeek & ElementToClone) :EbmlMaster(ElementToClone) {}
-		static EbmlElement & Create() {return *(new KaxSeek);}
-		const EbmlCallbacks & Generic() const {return ClassInfos;}
-		static const EbmlCallbacks ClassInfos;
-		operator const EbmlId &() const {return ClassInfos.GlobalId;}
-		EbmlElement * Clone() const {return new KaxSeek(*this);}
-
 		int64 Location() const;
 		bool IsEbmlId(const EbmlId & aId) const;
 		bool IsEbmlId(const KaxSeek & aPoint) const;
 };
 
-class MATROSKA_DLL_API KaxSeekID : public EbmlBinary {
+DECLARE_MKX_BINARY(KaxSeekID)
 	public:
-		KaxSeekID() {}
-		KaxSeekID(const KaxSeekID & ElementToClone) :EbmlBinary(ElementToClone){}
-		static EbmlElement & Create() {return *(new KaxSeekID);}
-		const EbmlCallbacks & Generic() const {return ClassInfos;}
-		static const EbmlCallbacks ClassInfos;
-		operator const EbmlId &() const {return ClassInfos.GlobalId;}
-		bool ValidateSize() const {return Size <= 4;}
-		EbmlElement * Clone() const {return new KaxSeekID(*this);}
+		virtual bool ValidateSize() const {return IsFiniteSize() && GetSize() <= 4;}
 };
 
-class MATROSKA_DLL_API KaxSeekPosition : public EbmlUInteger {
-	public:
-		KaxSeekPosition() {}
-		KaxSeekPosition(const KaxSeekPosition & ElementToClone) :EbmlUInteger(ElementToClone) {}
-		static EbmlElement & Create() {return *(new KaxSeekPosition);}
-		const EbmlCallbacks & Generic() const {return ClassInfos;}
-		static const EbmlCallbacks ClassInfos;
-		operator const EbmlId &() const {return ClassInfos.GlobalId;}
-		EbmlElement * Clone() const {return new KaxSeekPosition(*this);}
+DECLARE_MKX_UINTEGER(KaxSeekPosition)
 };
 
 END_LIBMATROSKA_NAMESPACE

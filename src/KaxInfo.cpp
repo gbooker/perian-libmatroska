@@ -3,7 +3,7 @@
 **
 ** <file/class description>
 **
-** Copyright (C) 2002-2005 Steve Lhomme.  All rights reserved.
+** Copyright (C) 2002-2010 Steve Lhomme.  All rights reserved.
 **
 ** This file is part of libmatroska.
 **
@@ -36,42 +36,30 @@
 #include "matroska/KaxInfoData.h"
 
 #include "matroska/KaxContexts.h"
+#include "matroska/KaxDefines.h"
 
 // sub elements
 START_LIBMATROSKA_NAMESPACE
 
-const EbmlSemantic KaxInfo_ContextList[14] =
-{
-	EbmlSemantic(false, true,  KaxSegmentUID::ClassInfos),
-	EbmlSemantic(false, true,  KaxSegmentFilename::ClassInfos),
-	EbmlSemantic(false, true,  KaxPrevUID::ClassInfos),
-	EbmlSemantic(false, true,  KaxPrevFilename::ClassInfos),
-	EbmlSemantic(false, true,  KaxNextUID::ClassInfos),
-	EbmlSemantic(false, true,  KaxNextFilename::ClassInfos),
-	EbmlSemantic(false, false, KaxSegmentFamily::ClassInfos),
-	EbmlSemantic(false, false, KaxChapterTranslate::ClassInfos),
-	EbmlSemantic(true,  true,  KaxTimecodeScale::ClassInfos),
-	EbmlSemantic(false, true,  KaxDuration::ClassInfos),
-	EbmlSemantic(false, true,  KaxDateUTC::ClassInfos),
-	EbmlSemantic(false, true,  KaxTitle::ClassInfos),
-	EbmlSemantic(true,  true,  KaxMuxingApp::ClassInfos),
-	EbmlSemantic(true,  true,  KaxWritingApp::ClassInfos),
-};
+DEFINE_START_SEMANTIC(KaxInfo)
+DEFINE_SEMANTIC_ITEM(false, true, KaxSegmentUID)
+DEFINE_SEMANTIC_ITEM(false, true, KaxSegmentFilename)
+DEFINE_SEMANTIC_ITEM(false, true, KaxPrevUID)
+DEFINE_SEMANTIC_ITEM(false, true, KaxPrevFilename)
+DEFINE_SEMANTIC_ITEM(false, true, KaxNextUID)
+DEFINE_SEMANTIC_ITEM(false, true, KaxNextFilename)
+DEFINE_SEMANTIC_ITEM(false, false, KaxSegmentFamily)
+DEFINE_SEMANTIC_ITEM(false, false, KaxChapterTranslate)
+DEFINE_SEMANTIC_ITEM(true, true, KaxTimecodeScale)
+DEFINE_SEMANTIC_ITEM(false, true, KaxDuration)
+DEFINE_SEMANTIC_ITEM(false, true, KaxDateUTC)
+DEFINE_SEMANTIC_ITEM(false, true, KaxTitle)
+DEFINE_SEMANTIC_ITEM(true, true, KaxMuxingApp)
+DEFINE_SEMANTIC_ITEM(true, true, KaxWritingApp)
+DEFINE_END_SEMANTIC(KaxInfo)
 
-const EbmlSemanticContext KaxInfo_Context = EbmlSemanticContext(countof(KaxInfo_ContextList), KaxInfo_ContextList, &KaxSegment_Context, *GetKaxGlobal_Context, &KaxInfo::ClassInfos);
-const EbmlSemanticContext KaxMuxingApp_Context = EbmlSemanticContext(0, NULL, &KaxInfo_Context, *GetKaxGlobal_Context, &KaxMuxingApp::ClassInfos);
-const EbmlSemanticContext KaxWritingApp_Context = EbmlSemanticContext(0, NULL, &KaxInfo_Context, *GetKaxGlobal_Context, &KaxWritingApp::ClassInfos);
-
-EbmlId KaxInfo_TheId      (0x1549A966, 4);
-EbmlId KaxMuxingApp_TheId (0x4D80, 2);
-EbmlId KaxWritingApp_TheId(0x5741, 2);
-
-const EbmlCallbacks KaxInfo::ClassInfos(KaxInfo::Create, KaxInfo_TheId, "Info", KaxInfo_Context);
-const EbmlCallbacks KaxMuxingApp::ClassInfos(KaxMuxingApp::Create, KaxMuxingApp_TheId, "MuxingApp", KaxMuxingApp_Context);
-const EbmlCallbacks KaxWritingApp::ClassInfos(KaxWritingApp::Create, KaxWritingApp_TheId, "WritingApp", KaxWritingApp_Context);
-
-KaxInfo::KaxInfo()
-	:EbmlMaster(KaxInfo_Context)
-{}
+DEFINE_MKX_MASTER   (KaxInfo,   0x1549A966, 4, KaxSegment, "Info");
+DEFINE_MKX_UNISTRING(KaxMuxingApp,  0x4D80, 2, KaxInfo, "MuxingApp");
+DEFINE_MKX_UNISTRING(KaxWritingApp, 0x5741, 2, KaxInfo, "WritingApp");
 
 END_LIBMATROSKA_NAMESPACE

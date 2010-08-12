@@ -3,7 +3,7 @@
 **
 ** <file/class MATROSKA_DLL_API description>
 **
-** Copyright (C) 2002-2004 Steve Lhomme.  All rights reserved.
+** Copyright (C) 2002-2010 Steve Lhomme.  All rights reserved.
 **
 ** This file is part of libmatroska.
 **
@@ -38,42 +38,19 @@
 #include "matroska/KaxTypes.h"
 #include "ebml/EbmlMaster.h"
 #include "ebml/EbmlUnicodeString.h"
+#include "matroska/KaxDefines.h"
 
 using namespace LIBEBML_NAMESPACE;
 
 START_LIBMATROSKA_NAMESPACE
 
-class MATROSKA_DLL_API KaxInfo : public EbmlMaster {
-	public:
-		KaxInfo();
-		KaxInfo(const KaxInfo & ElementToClone) :EbmlMaster(ElementToClone) {}
-		static EbmlElement & Create() {return *(new KaxInfo);}
-		const EbmlCallbacks & Generic() const {return ClassInfos;}
-		static const EbmlCallbacks ClassInfos;
-		operator const EbmlId &() const {return ClassInfos.GlobalId;}
-		EbmlElement * Clone() const {return new KaxInfo(*this);}
+DECLARE_MKX_MASTER(KaxInfo)
 };
 
-class MATROSKA_DLL_API KaxMuxingApp : public EbmlUnicodeString {
-	public:
-		KaxMuxingApp() {}
-		KaxMuxingApp(const KaxMuxingApp & ElementToClone) :EbmlUnicodeString(ElementToClone) {}
-		static EbmlElement & Create() {return *(new KaxMuxingApp);}
-		const EbmlCallbacks & Generic() const {return ClassInfos;}
-		static const EbmlCallbacks ClassInfos;
-		operator const EbmlId &() const {return ClassInfos.GlobalId;}
-		EbmlElement * Clone() const {return new KaxMuxingApp(*this);}
+DECLARE_MKX_UNISTRING(KaxMuxingApp)
 };
 
-class MATROSKA_DLL_API KaxWritingApp : public EbmlUnicodeString {
-	public:
-		KaxWritingApp() {}
-		KaxWritingApp(const KaxWritingApp & ElementToClone) :EbmlUnicodeString(ElementToClone) {}
-		static EbmlElement & Create() {return *(new KaxWritingApp);}
-		const EbmlCallbacks & Generic() const {return ClassInfos;}
-		static const EbmlCallbacks ClassInfos;
-		operator const EbmlId &() const {return ClassInfos.GlobalId;}
-		EbmlElement * Clone() const {return new KaxWritingApp(*this);}
+DECLARE_MKX_UNISTRING(KaxWritingApp)
 };
 
 END_LIBMATROSKA_NAMESPACE

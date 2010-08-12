@@ -3,7 +3,7 @@
 **
 ** <file/class description>
 **
-** Copyright (C) 2002-2005 Steve Lhomme.  All rights reserved.
+** Copyright (C) 2002-2010 Steve Lhomme.  All rights reserved.
 **
 ** This library is free software; you can redistribute it and/or
 ** modify it under the terms of the GNU Lesser General Public
@@ -36,44 +36,40 @@
 #include "matroska/KaxCuesData.h"
 #include "matroska/KaxContexts.h"
 #include "ebml/EbmlStream.h"
+#include "matroska/KaxDefines.h"
 
 // sub elements
 START_LIBMATROSKA_NAMESPACE
 
-EbmlSemantic KaxCues_ContextList[1] = 
-{
-	EbmlSemantic(true,  false,  KaxCuePoint::ClassInfos),
-};
+DEFINE_START_SEMANTIC(KaxCues) 
+DEFINE_SEMANTIC_ITEM(true, false, KaxCuePoint)
+DEFINE_END_SEMANTIC(KaxCues) 
 
-const EbmlSemanticContext KaxCues_Context = EbmlSemanticContext(countof(KaxCues_ContextList), KaxCues_ContextList, &KaxSegment_Context, *GetKaxGlobal_Context, &KaxCues::ClassInfos);
-
-EbmlId KaxCues_TheId(0x1C53BB6B, 4);
-const EbmlCallbacks KaxCues::ClassInfos(KaxCues::Create, KaxCues_TheId, "Cues", KaxCues_Context);
-
-KaxCues::KaxCues()
-	:EbmlMaster(KaxCues_Context)
-{}
+DEFINE_MKX_MASTER(KaxCues, 0x1C53BB6B, 4, KaxSegment, "Cues");
 
 KaxCues::~KaxCues()
 {
 	assert(myTempReferences.size() == 0); // otherwise that means you have added references and forgot to set the position
 }
-
+/* deprecated and wrong
 bool KaxCues::AddBlockGroup(const KaxBlockGroup & BlockRef)
 {
 	// Do not add the element if it's already present.
 	std::vector<const KaxBlockBlob *>::iterator ListIdx;
-	KaxBlockBlob &BlockReference = *(new KaxBlockBlob(BLOCK_BLOB_NO_SIMPLE));
-	BlockReference.SetBlockGroup(*const_cast<KaxBlockGroup*>(&BlockRef));
+	KaxBlockBlob *BlockReference = new KaxBlockBlob(BLOCK_BLOB_NO_SIMPLE);
+	BlockReference->SetBlockGroup(*const_cast<KaxBlockGroup*>(&BlockRef));
 
 	for (ListIdx = myTempReferences.begin(); ListIdx != myTempReferences.end(); ListIdx++)
-		if (*ListIdx == &BlockReference)
+		if (&(KaxBlockGroup&)*ListIdx == &BlockRef)
+        {
+            delete BlockReference;
 			return true;
+        }
 
-	myTempReferences.push_back(&BlockReference);
+	myTempReferences.push_back(BlockReference);
 	return true;
 }
-
+*/
 bool KaxCues::AddBlockBlob(const KaxBlockBlob & BlockReference)
 {
 	// Do not add the element if it's already present.
@@ -132,12 +128,13 @@ const KaxCuePoint * KaxCues::GetTimecodePoint(uint64 aTimecode) const
 	const KaxCuePoint * aPointNext = NULL;
 	uint64 aNextTime = EBML_PRETTYLONGINT(0xFFFFFFFFFFFF);
 
-	for (unsigned int i=0; i<ListSize(); i++)
-	{
-		if (EbmlId(*(*this)[i]) == KaxCuePoint::ClassInfos.GlobalId) {
-			const KaxCuePoint *tmp = static_cast<const KaxCuePoint *>((*this)[i]);
+    EBML_MASTER_CONST_ITERATOR Itr;
+	for (Itr = begin(); Itr != end(); ++Itr)
+    {
+		if (EbmlId(*(*Itr)) == EBML_ID(KaxCuePoint)) {
+			const KaxCuePoint *tmp = static_cast<const KaxCuePoint *>(*Itr);
 			// check the tile
-			const KaxCueTime *aTime = static_cast<const KaxCueTime *>(tmp->FindFirstElt(KaxCueTime::ClassInfos));
+			const KaxCueTime *aTime = static_cast<const KaxCueTime *>(tmp->FindFirstElt(EBML_INFO(KaxCueTime)));
 			if (aTime != NULL)
 			{
 				uint64 _Time = uint64(*aTime);

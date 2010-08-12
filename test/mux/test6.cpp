@@ -29,7 +29,7 @@
 
 /*!
     \file
-    \version \$Id: test6.cpp 1078 2005-03-03 13:13:04Z robux4 $
+    \version \$Id$
     \brief Test muxing two tracks into valid clusters/blocks/frames
     \author Steve Lhomme     <robux4 @ users.sf.net>
 */
@@ -125,7 +125,7 @@ int main(int argc, char **argv)
 		*((EbmlUnicodeString *)&GetChild<KaxWritingApp>(MyInfos)) = L"éàôï";
 		GetChild<KaxWritingApp>(MyInfos).SetDefaultSize(25);
 
-		uint32 InfoSize = MyInfos.Render(out_file);
+		filepos_t InfoSize = MyInfos.Render(out_file);
 		MetaSeek.IndexThis(MyInfos, FileSegment);
 
 		// fill track 1 params
@@ -252,13 +252,17 @@ int main(int argc, char **argv)
 		Clust1.AddFrame(MyTrack2, 23 * TIMECODE_SCALE, *data5, MyNewBlock); // to test with another track
 
 		// add the "real" block to the cue entries
-		AllCues.AddBlockGroup(*MyLastBlockTrk1);
+        KaxBlockBlob *Blob1 = new KaxBlockBlob(BLOCK_BLOB_NO_SIMPLE);
+        Blob1->SetBlockGroup(*MyLastBlockTrk1);
+		AllCues.AddBlockBlob(*Blob1);
 
 		// frame for Track 2
 		DataBuffer *data8 = new DataBuffer((binary *)"tttyyy", countof("tttyyy"));
 		Clust1.AddFrame(MyTrack2, 107 * TIMECODE_SCALE, *data8, MyNewBlock, *MyLastBlockTrk2);
 
-		AllCues.AddBlockGroup(*MyNewBlock);
+        KaxBlockBlob *Blob2 = new KaxBlockBlob(BLOCK_BLOB_NO_SIMPLE);
+        Blob2->SetBlockGroup(*MyNewBlock);
+		AllCues.AddBlockBlob(*Blob2);
 
 		// frame with a past reference
 		DataBuffer *data4 = new DataBuffer((binary *)"tttyyy", countof("tttyyy"));
@@ -275,7 +279,9 @@ int main(int argc, char **argv)
 			}
 		}
 
-		AllCues.AddBlockGroup(*MyLastBlockTrk1);
+        KaxBlockBlob *Blob3 = new KaxBlockBlob(BLOCK_BLOB_NO_SIMPLE);
+        Blob3->SetBlockGroup(*MyLastBlockTrk1);
+		AllCues.AddBlockBlob(*Blob3);
 		//AllCues.UpdateSize();
 
 		// simulate the writing of the stream :
@@ -295,13 +301,15 @@ int main(int argc, char **argv)
 		DataBuffer *data2 = new DataBuffer((binary *)"tttyyy", countof("tttyyy"));
 		Clust2.AddFrame(MyTrack1, 350 * TIMECODE_SCALE, *data2, MyNewBlock, *MyLastBlockTrk1);
 		
-		AllCues.AddBlockGroup(*MyNewBlock);
+        KaxBlockBlob *Blob4 = new KaxBlockBlob(BLOCK_BLOB_NO_SIMPLE);
+        Blob4->SetBlockGroup(*MyNewBlock);
+		AllCues.AddBlockBlob(*Blob4);
 
 		ClusterSize += Clust2.Render(out_file, AllCues, bWriteDefaultValues);
 		Clust2.ReleaseFrames();
 
 // older version, write at the end		AllCues.Render(out_file);
-		uint32 CueSize = AllCues.Render(out_file, bWriteDefaultValues);
+		filepos_t CueSize = AllCues.Render(out_file, bWriteDefaultValues);
 		MetaSeek.IndexThis(AllCues, FileSegment);
 
 		// Chapters
@@ -332,7 +340,7 @@ int main(int argc, char **argv)
 		KaxChapterLanguage & aChapLang2 = GetChild<KaxChapterLanguage>(aDisplay2);
 		*static_cast<EbmlString *>(&aChapLang2) = "eng";
 
-		uint32 ChapterSize = Chapters.Render(out_file, bWriteDefaultValues);
+		filepos_t ChapterSize = Chapters.Render(out_file, bWriteDefaultValues);
 		MetaSeek.IndexThis(Chapters, FileSegment);
 
 		// Write some tags
@@ -340,7 +348,7 @@ int main(int argc, char **argv)
 		AllTags.EnableChecksum();
 		KaxTag & aTag = GetChild<KaxTag>(AllTags);
 		KaxTagTargets & Targets = GetChild<KaxTagTargets>(aTag);
-		KaxTagGeneral & TagGeneral = GetChild<KaxTagGeneral>(aTag);
+		KaxTagSimple & TagSimple = GetChild<KaxTagSimple>(aTag);
 
 		KaxTagTrackUID & TrackUID = GetChild<KaxTagTrackUID>(Targets);
 		*static_cast<EbmlUInteger *>(&TrackUID) = 0x12345;
@@ -348,26 +356,20 @@ int main(int argc, char **argv)
 		KaxTagChapterUID & ChapterUID = GetChild<KaxTagChapterUID>(Targets);
 		*static_cast<EbmlUInteger *>(&ChapterUID) = 0x67890;
 
-		KaxTagSubject & Subject = GetChild<KaxTagSubject>(TagGeneral);
-		*static_cast<EbmlUnicodeString *>(&Subject) = L"Testé123";
+        KaxTagName & aTagName = GetChild<KaxTagName>(TagSimple);
+        *static_cast<EbmlUnicodeString *>(&aTagName) = L"NAME";
 
-		KaxTagBibliography & Biblio = GetChild<KaxTagBibliography>(TagGeneral);
-		*static_cast<EbmlUnicodeString *>(&Biblio) = L"ça marche";
+        KaxTagString & aTagtring = GetChild<KaxTagString>(TagSimple);
+        *static_cast<EbmlUnicodeString *>(&aTagtring) = L"Testé123";
 
-		KaxTagFile & File = GetChild<KaxTagFile>(TagGeneral);
-		*static_cast<EbmlUnicodeString *>(&File) = L"Fichier";
-
-		KaxTagLanguage & Lang = GetChild<KaxTagLanguage>(TagGeneral);
-		*static_cast<EbmlString *>(&Lang) = "fra";
-
-		uint32 TagsSize = AllTags.Render(out_file, bWriteDefaultValues);
+		filepos_t TagsSize = AllTags.Render(out_file, bWriteDefaultValues);
 		MetaSeek.IndexThis(AllTags, FileSegment);
 
 		TrackSize += pMyTracks2->Render(out_file, bWriteDefaultValues);
 		MetaSeek.IndexThis(*pMyTracks2, FileSegment);
 
 		// \todo put it just before the Cue Entries
-		uint32 MetaSeekSize = Dummy.ReplaceWith(MetaSeek, out_file, bWriteDefaultValues);
+		filepos_t MetaSeekSize = Dummy.ReplaceWith(MetaSeek, out_file, bWriteDefaultValues);
 
 #ifdef VOID_TEST
 		MyInfos.VoidMe(out_file);
@@ -389,6 +391,11 @@ int main(int argc, char **argv)
 		MuxedFile.Close(1000); // 1000 ms
 #endif // OLD
 		out_file.close();
+
+        delete Blob1;
+        delete Blob2;
+        delete Blob3;
+        delete Blob4;
     }
     catch (exception & Ex)
     {

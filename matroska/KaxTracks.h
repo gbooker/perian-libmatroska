@@ -3,7 +3,7 @@
 **
 ** <file/class description>
 **
-** Copyright (C) 2002-2004 Steve Lhomme.  All rights reserved.
+** Copyright (C) 2002-2010 Steve Lhomme.  All rights reserved.
 **
 ** This file is part of libmatroska.
 **
@@ -39,33 +39,18 @@
 #include "ebml/EbmlMaster.h"
 #include "ebml/EbmlUInteger.h"
 #include "matroska/KaxTrackEntryData.h"
+#include "matroska/KaxDefines.h"
 
 using namespace LIBEBML_NAMESPACE;
 
 START_LIBMATROSKA_NAMESPACE
 
-class MATROSKA_DLL_API KaxTracks : public EbmlMaster {
-	public:
-		KaxTracks();
-		KaxTracks(const KaxTracks & ElementToClone) :EbmlMaster(ElementToClone) {}
-		static EbmlElement & Create() {return *(new KaxTracks);}
-		const EbmlCallbacks & Generic() const {return ClassInfos;}
-		static const EbmlCallbacks ClassInfos;
-		operator const EbmlId &() const {return ClassInfos.GlobalId;}
-		EbmlElement * Clone() const {return new KaxTracks(*this);}
+DECLARE_MKX_MASTER(KaxTracks)
 };
 
-class MATROSKA_DLL_API KaxTrackEntry : public EbmlMaster {
+DECLARE_MKX_MASTER(KaxTrackEntry)
 	public:
-		KaxTrackEntry();
-		KaxTrackEntry(const KaxTrackEntry & ElementToClone) :EbmlMaster(ElementToClone) {}
-		static EbmlElement & Create() {return *(new KaxTrackEntry);}
-		const EbmlCallbacks & Generic() const {return ClassInfos;}
-		static const EbmlCallbacks ClassInfos;
-		operator const EbmlId &() const {return ClassInfos.GlobalId;}
-		EbmlElement * Clone() const {return new KaxTrackEntry(*this);}
-
-		EbmlUInteger & TrackNumber() const { return *(static_cast<EbmlUInteger *>(FindElt(KaxTrackNumber::ClassInfos))); }
+		EbmlUInteger & TrackNumber() const { return *(static_cast<EbmlUInteger *>(FindElt(EBML_INFO(KaxTrackNumber)))); }
 
 		void EnableLacing(bool bEnable = true);
 
@@ -73,7 +58,7 @@ class MATROSKA_DLL_API KaxTrackEntry : public EbmlMaster {
 			\note lacing set by default
 		*/
 		inline bool LacingEnabled() const {
-			KaxTrackFlagLacing * myLacing = static_cast<KaxTrackFlagLacing *>(FindFirstElt(KaxTrackFlagLacing::ClassInfos));
+			KaxTrackFlagLacing * myLacing = static_cast<KaxTrackFlagLacing *>(FindFirstElt(EBML_INFO(KaxTrackFlagLacing)));
 			return((myLacing == NULL) || (uint8(*myLacing) != 0));
 		}
 
@@ -90,6 +75,23 @@ class MATROSKA_DLL_API KaxTrackEntry : public EbmlMaster {
 		bool   bGlobalTimecodeScaleIsSet;
 		uint64 mGlobalTimecodeScale;
 };
+
+#if MATROSKA_VERSION >= 2
+DECLARE_MKX_MASTER(KaxTrackDependency)
+};
+
+DECLARE_MKX_UINTEGER(KaxTrackDependencyType)
+};
+
+DECLARE_MKX_MASTER(KaxTrackDependencyItem)
+};
+
+DECLARE_MKX_UINTEGER(KaxTrackDependencyUID)
+};
+
+DECLARE_MKX_UINTEGER(KaxTrackDependencyStereoPos)
+};
+#endif
 
 END_LIBMATROSKA_NAMESPACE
 

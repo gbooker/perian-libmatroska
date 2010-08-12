@@ -3,7 +3,7 @@
 **
 ** <file/class MATROSKA_DLL_API description>
 **
-** Copyright (C) 2002-2004 Steve Lhomme.  All rights reserved.
+** Copyright (C) 2002-2010 Steve Lhomme.  All rights reserved.
 **
 ** This file is part of libmatroska.
 **
@@ -29,7 +29,7 @@
 
 /*!
 	\file
-	\version \$Id: KaxTrackVideo.h,v 1.9 2004/04/14 23:26:17 robux4 Exp $
+	\version \$Id$
 	\author Steve Lhomme     <robux4 @ users.sf.net>
 */
 #ifndef LIBMATROSKA_TRACK_VIDEO_H
@@ -40,193 +40,68 @@
 #include "ebml/EbmlUInteger.h"
 #include "ebml/EbmlBinary.h"
 #include "ebml/EbmlFloat.h"
+#include "matroska/KaxDefines.h"
 
 using namespace LIBEBML_NAMESPACE;
 
 START_LIBMATROSKA_NAMESPACE
 
-class MATROSKA_DLL_API KaxTrackVideo : public EbmlMaster {
-	public:
-		KaxTrackVideo();
-		KaxTrackVideo(const KaxTrackVideo & ElementToClone) :EbmlMaster(ElementToClone) {}
-		static EbmlElement & Create() {return *(new KaxTrackVideo);}
-		const EbmlCallbacks & Generic() const {return ClassInfos;}
-		static const EbmlCallbacks ClassInfos;
-		operator const EbmlId &() const {return ClassInfos.GlobalId;}
-		EbmlElement * Clone() const {return new KaxTrackVideo(*this);}
+DECLARE_MKX_MASTER(KaxTrackVideo)
 };
 
 #if MATROSKA_VERSION >= 2
-class MATROSKA_DLL_API KaxVideoFlagInterlaced : public EbmlUInteger {
-	public:
-		KaxVideoFlagInterlaced() :EbmlUInteger(0) {}
-		KaxVideoFlagInterlaced(const KaxVideoFlagInterlaced & ElementToClone) :EbmlUInteger(ElementToClone) {}
-		static EbmlElement & Create() {return *(new KaxVideoFlagInterlaced);}
-		const EbmlCallbacks & Generic() const {return ClassInfos;}
-		static const EbmlCallbacks ClassInfos;
-		operator const EbmlId &() const {return ClassInfos.GlobalId;}
-		EbmlElement * Clone() const {return new KaxVideoFlagInterlaced(*this);}
+DECLARE_MKX_UINTEGER(KaxVideoFlagInterlaced)
 };
 
-class MATROSKA_DLL_API KaxVideoStereoMode : public EbmlUInteger {
-	public:
-		KaxVideoStereoMode() :EbmlUInteger(0) {}
-		KaxVideoStereoMode(const KaxVideoStereoMode & ElementToClone) :EbmlUInteger(ElementToClone) {}
-		static EbmlElement & Create() {return *(new KaxVideoStereoMode);}
-		const EbmlCallbacks & Generic() const {return ClassInfos;}
-		static const EbmlCallbacks ClassInfos;
-		operator const EbmlId &() const {return ClassInfos.GlobalId;}
-		EbmlElement * Clone() const {return new KaxVideoStereoMode(*this);}
+DECLARE_MKX_UINTEGER(KaxVideoStereoMode)
 };
 #endif // MATROSKA_VERSION
 
-class MATROSKA_DLL_API KaxVideoPixelWidth : public EbmlUInteger {
-	public:
-		KaxVideoPixelWidth() {}
-		KaxVideoPixelWidth(const KaxVideoPixelWidth & ElementToClone) :EbmlUInteger(ElementToClone) {}
-		static EbmlElement & Create() {return *(new KaxVideoPixelWidth);}
-		const EbmlCallbacks & Generic() const {return ClassInfos;}
-		static const EbmlCallbacks ClassInfos;
-		operator const EbmlId &() const {return ClassInfos.GlobalId;}
-		EbmlElement * Clone() const {return new KaxVideoPixelWidth(*this);}
+DECLARE_MKX_UINTEGER(KaxVideoPixelWidth)
 };
 
-class MATROSKA_DLL_API KaxVideoPixelHeight : public EbmlUInteger {
-	public:
-		KaxVideoPixelHeight() {}
-		KaxVideoPixelHeight(const KaxVideoPixelHeight & ElementToClone) :EbmlUInteger(ElementToClone) {}
-		static EbmlElement & Create() {return *(new KaxVideoPixelHeight);}
-		const EbmlCallbacks & Generic() const {return ClassInfos;}
-		static const EbmlCallbacks ClassInfos;
-		operator const EbmlId &() const {return ClassInfos.GlobalId;}
-		EbmlElement * Clone() const {return new KaxVideoPixelHeight(*this);}
+DECLARE_MKX_UINTEGER(KaxVideoPixelHeight)
 };
 
-class MATROSKA_DLL_API KaxVideoPixelCropBottom : public EbmlUInteger {
-	public:
-		KaxVideoPixelCropBottom(): EbmlUInteger(0) {}
-		KaxVideoPixelCropBottom(const KaxVideoPixelCropBottom & ElementToClone) :EbmlUInteger(ElementToClone) {}
-		static EbmlElement & Create() {return *(new KaxVideoPixelCropBottom);}
-		const EbmlCallbacks & Generic() const {return ClassInfos;}
-		static const EbmlCallbacks ClassInfos;
-		operator const EbmlId &() const {return ClassInfos.GlobalId;}
-		EbmlElement * Clone() const {return new KaxVideoPixelCropBottom(*this);}
+DECLARE_MKX_UINTEGER(KaxVideoPixelCropBottom)
 };
 
-class MATROSKA_DLL_API KaxVideoPixelCropTop : public EbmlUInteger {
-	public:
-		KaxVideoPixelCropTop(): EbmlUInteger(0) {}
-		KaxVideoPixelCropTop(const KaxVideoPixelCropTop & ElementToClone) :EbmlUInteger(ElementToClone) {}
-		static EbmlElement & Create() {return *(new KaxVideoPixelCropTop);}
-		const EbmlCallbacks & Generic() const {return ClassInfos;}
-		static const EbmlCallbacks ClassInfos;
-		operator const EbmlId &() const {return ClassInfos.GlobalId;}
-		EbmlElement * Clone() const {return new KaxVideoPixelCropTop(*this);}
+DECLARE_MKX_UINTEGER(KaxVideoPixelCropTop)
 };
 
-class MATROSKA_DLL_API KaxVideoPixelCropLeft : public EbmlUInteger {
-	public:
-		KaxVideoPixelCropLeft(): EbmlUInteger(0) {}
-		KaxVideoPixelCropLeft(const KaxVideoPixelCropLeft & ElementToClone) :EbmlUInteger(ElementToClone) {}
-		static EbmlElement & Create() {return *(new KaxVideoPixelCropLeft);}
-		const EbmlCallbacks & Generic() const {return ClassInfos;}
-		static const EbmlCallbacks ClassInfos;
-		operator const EbmlId &() const {return ClassInfos.GlobalId;}
-		EbmlElement * Clone() const {return new KaxVideoPixelCropLeft(*this);}
+DECLARE_MKX_UINTEGER(KaxVideoPixelCropLeft)
 };
 
-class MATROSKA_DLL_API KaxVideoPixelCropRight : public EbmlUInteger {
-	public:
-		KaxVideoPixelCropRight(): EbmlUInteger(0) {}
-		KaxVideoPixelCropRight(const KaxVideoPixelCropRight & ElementToClone) :EbmlUInteger(ElementToClone) {}
-		static EbmlElement & Create() {return *(new KaxVideoPixelCropRight);}
-		const EbmlCallbacks & Generic() const {return ClassInfos;}
-		static const EbmlCallbacks ClassInfos;
-		operator const EbmlId &() const {return ClassInfos.GlobalId;}
-		EbmlElement * Clone() const {return new KaxVideoPixelCropRight(*this);}
+DECLARE_MKX_UINTEGER(KaxVideoPixelCropRight)
 };
 
-class MATROSKA_DLL_API KaxVideoDisplayWidth : public EbmlUInteger {
-	public:
-		KaxVideoDisplayWidth() {}
-		KaxVideoDisplayWidth(const KaxVideoDisplayWidth & ElementToClone) :EbmlUInteger(ElementToClone) {}
-		static EbmlElement & Create() {return *(new KaxVideoDisplayWidth);}
-		const EbmlCallbacks & Generic() const {return ClassInfos;}
-		static const EbmlCallbacks ClassInfos;
-		operator const EbmlId &() const {return ClassInfos.GlobalId;}
-		EbmlElement * Clone() const {return new KaxVideoDisplayWidth(*this);}
+DECLARE_MKX_UINTEGER(KaxVideoDisplayWidth)
 };
 
-class MATROSKA_DLL_API KaxVideoDisplayHeight : public EbmlUInteger {
-	public:
-		KaxVideoDisplayHeight() {}
-		KaxVideoDisplayHeight(const KaxVideoDisplayHeight & ElementToClone) :EbmlUInteger(ElementToClone) {}
-		static EbmlElement & Create() {return *(new KaxVideoDisplayHeight);}
-		const EbmlCallbacks & Generic() const {return ClassInfos;}
-		static const EbmlCallbacks ClassInfos;
-		operator const EbmlId &() const {return ClassInfos.GlobalId;}
-		EbmlElement * Clone() const {return new KaxVideoDisplayHeight(*this);}
+DECLARE_MKX_UINTEGER(KaxVideoDisplayHeight)
 };
 
 #if MATROSKA_VERSION >= 2
-class MATROSKA_DLL_API KaxVideoDisplayUnit : public EbmlUInteger {
-	public:
-		KaxVideoDisplayUnit() {}
-		KaxVideoDisplayUnit(const KaxVideoDisplayUnit & ElementToClone) :EbmlUInteger(ElementToClone) {}
-		static EbmlElement & Create() {return *(new KaxVideoDisplayUnit);}
-		const EbmlCallbacks & Generic() const {return ClassInfos;}
-		static const EbmlCallbacks ClassInfos;
-		operator const EbmlId &() const {return ClassInfos.GlobalId;}
-		EbmlElement * Clone() const {return new KaxVideoDisplayUnit(*this);}
+DECLARE_MKX_UINTEGER(KaxVideoDisplayUnit)
 };
 
-class MATROSKA_DLL_API KaxVideoAspectRatio : public EbmlUInteger {
-	public:
-		KaxVideoAspectRatio() {}
-		KaxVideoAspectRatio(const KaxVideoAspectRatio & ElementToClone) :EbmlUInteger(ElementToClone) {}
-		static EbmlElement & Create() {return *(new KaxVideoAspectRatio);}
-		const EbmlCallbacks & Generic() const {return ClassInfos;}
-		static const EbmlCallbacks ClassInfos;
-		operator const EbmlId &() const {return ClassInfos.GlobalId;}
-		EbmlElement * Clone() const {return new KaxVideoAspectRatio(*this);}
+DECLARE_MKX_UINTEGER(KaxVideoAspectRatio)
 };
 #endif // MATROSKA_VERSION
 
-class MATROSKA_DLL_API KaxVideoColourSpace : public EbmlBinary {
+DECLARE_MKX_BINARY(KaxVideoColourSpace)
 	public:
-		KaxVideoColourSpace() {}
-		KaxVideoColourSpace(const KaxVideoColourSpace & ElementToClone) :EbmlBinary(ElementToClone){}
-		static EbmlElement & Create() {return *(new KaxVideoColourSpace);}
-		const EbmlCallbacks & Generic() const {return ClassInfos;}
-		static const EbmlCallbacks ClassInfos;
-		bool ValidateSize(void) const {return (Size == 4);}
-		operator const EbmlId &() const {return ClassInfos.GlobalId;}
-		EbmlElement * Clone() const {return new KaxVideoColourSpace(*this);}
+        bool ValidateSize(void) const {return IsFiniteSize() && (GetSize() == 4);}
 };
 
 #if MATROSKA_VERSION >= 2
-class MATROSKA_DLL_API KaxVideoGamma : public EbmlFloat {
-	public:
-		KaxVideoGamma() {}
-		KaxVideoGamma(const KaxVideoGamma & ElementToClone) :EbmlFloat(ElementToClone) {}
-		static EbmlElement & Create() {return *(new KaxVideoGamma);}
-		const EbmlCallbacks & Generic() const {return ClassInfos;}
-		static const EbmlCallbacks ClassInfos;
-		operator const EbmlId &() const {return ClassInfos.GlobalId;}
-		EbmlElement * Clone() const {return new KaxVideoGamma(*this);}
+DECLARE_MKX_FLOAT(KaxVideoGamma)
 };
 #endif // MATROSKA_VERSION
 
-class MATROSKA_DLL_API KaxVideoFrameRate : public EbmlFloat {
+DECLARE_MKX_FLOAT(KaxVideoFrameRate)
 	public:
-		KaxVideoFrameRate() {}
-		KaxVideoFrameRate(const KaxVideoFrameRate & ElementToClone) :EbmlFloat(ElementToClone) {}
-		static EbmlElement & Create() {return *(new KaxVideoFrameRate);}
-		const EbmlCallbacks & Generic() const {return ClassInfos;}
-		static const EbmlCallbacks ClassInfos;
-		operator const EbmlId &() const {return ClassInfos.GlobalId;}
-		uint32 RenderData(IOCallback & output, bool bForceRender, bool bSaveDefault);
-		EbmlElement * Clone() const {return new KaxVideoFrameRate(*this);}
+		filepos_t RenderData(IOCallback & output, bool bForceRender, bool bSaveDefault);
 };
 
 

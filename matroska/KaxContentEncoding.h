@@ -3,7 +3,7 @@
 **
 ** <file/class description>
 **
-** Copyright (C) 2002-2004 Steve Lhomme.  All rights reserved.
+** Copyright (C) 2002-2010 Steve Lhomme.  All rights reserved.
 **
 ** This file is part of libmatroska.
 **
@@ -39,210 +39,55 @@
 #include "ebml/EbmlMaster.h"
 #include "ebml/EbmlUInteger.h"
 #include "ebml/EbmlBinary.h"
+#include "matroska/KaxDefines.h"
 
 using namespace LIBEBML_NAMESPACE;
 
 START_LIBMATROSKA_NAMESPACE
 
-class MATROSKA_DLL_API KaxContentEncodings: public EbmlMaster {
-public:
-  static const EbmlCallbacks ClassInfos;
-
-  KaxContentEncodings();
-  KaxContentEncodings(const KaxContentEncodings &ElementToClone):
-    EbmlMaster(ElementToClone) {}
-  static EbmlElement &Create() { return *(new KaxContentEncodings); }
-  const EbmlCallbacks &Generic() const { return ClassInfos; }
-  operator const EbmlId &() const { return ClassInfos.GlobalId; }
-  EbmlElement *Clone() const { return new KaxContentEncodings(*this); }
+DECLARE_MKX_MASTER(KaxContentEncodings)
 };
 
-class MATROSKA_DLL_API KaxContentEncoding: public EbmlMaster {
-public:
-  static const EbmlCallbacks ClassInfos;
-
-  KaxContentEncoding();
-  KaxContentEncoding(const KaxContentEncoding &ElementToClone):
-    EbmlMaster(ElementToClone) {}
-  static EbmlElement &Create() { return *(new KaxContentEncoding); }
-  const EbmlCallbacks &Generic() const { return ClassInfos; }
-  operator const EbmlId &() const { return ClassInfos.GlobalId; }
-  EbmlElement *Clone() const { return new KaxContentEncoding(*this); }
+DECLARE_MKX_MASTER(KaxContentEncoding)
 };
 
-class MATROSKA_DLL_API KaxContentEncodingOrder: public EbmlUInteger {
-public:
-  static const EbmlCallbacks ClassInfos;
-
-  KaxContentEncodingOrder(): EbmlUInteger(0) {}
-  KaxContentEncodingOrder(const KaxContentEncodingOrder &ElementToClone):
-    EbmlUInteger(ElementToClone) {}
-  static EbmlElement &Create() { return *(new KaxContentEncodingOrder); }
-  const EbmlCallbacks &Generic() const { return ClassInfos; }
-  operator const EbmlId &() const { return ClassInfos.GlobalId; }
-  EbmlElement *Clone() const { return new KaxContentEncodingOrder(*this); }
+DECLARE_MKX_UINTEGER(KaxContentEncodingOrder)
 };
 
-class MATROSKA_DLL_API KaxContentEncodingScope: public EbmlUInteger {
-public:
-  static const EbmlCallbacks ClassInfos;
-
-  KaxContentEncodingScope(): EbmlUInteger(1) {}
-  KaxContentEncodingScope(const KaxContentEncodingScope &ElementToClone):
-    EbmlUInteger(ElementToClone) {}
-  static EbmlElement &Create() { return *(new KaxContentEncodingScope); }
-  const EbmlCallbacks &Generic() const { return ClassInfos; }
-  operator const EbmlId &() const { return ClassInfos.GlobalId; }
-  EbmlElement *Clone() const { return new KaxContentEncodingScope(*this); }
+DECLARE_MKX_UINTEGER(KaxContentEncodingScope)
 };
 
-class MATROSKA_DLL_API KaxContentEncodingType: public EbmlUInteger {
-public:
-  static const EbmlCallbacks ClassInfos;
-
-  KaxContentEncodingType(): EbmlUInteger(0) {}
-  KaxContentEncodingType(const KaxContentEncodingType &ElementToClone):
-    EbmlUInteger(ElementToClone) {}
-  static EbmlElement &Create() { return *(new KaxContentEncodingType); }
-  const EbmlCallbacks &Generic() const { return ClassInfos; }
-  operator const EbmlId &() const { return ClassInfos.GlobalId; }
-  EbmlElement *Clone() const { return new KaxContentEncodingType(*this); }
+DECLARE_MKX_UINTEGER(KaxContentEncodingType)
 };
 
-class MATROSKA_DLL_API KaxContentCompression: public EbmlMaster {
-public:
-  static const EbmlCallbacks ClassInfos;
-
-  KaxContentCompression();
-  KaxContentCompression(const KaxContentCompression &ElementToClone):
-    EbmlMaster(ElementToClone) {}
-  static EbmlElement &Create() { return *(new KaxContentCompression); }
-  const EbmlCallbacks &Generic() const { return ClassInfos; }
-  operator const EbmlId &() const { return ClassInfos.GlobalId; }
-  EbmlElement *Clone() const { return new KaxContentCompression(*this); }
+DECLARE_MKX_MASTER(KaxContentCompression)
 };
 
-class MATROSKA_DLL_API KaxContentCompAlgo: public EbmlUInteger {
-public:
-  static const EbmlCallbacks ClassInfos;
-
-  KaxContentCompAlgo(): EbmlUInteger(0) {}
-  KaxContentCompAlgo(const KaxContentCompAlgo &ElementToClone):
-    EbmlUInteger(ElementToClone) {}
-  static EbmlElement &Create() { return *(new KaxContentCompAlgo); }
-  const EbmlCallbacks &Generic() const { return ClassInfos; }
-  operator const EbmlId &() const { return ClassInfos.GlobalId; }
-  EbmlElement *Clone() const { return new KaxContentCompAlgo(*this); }
+DECLARE_MKX_UINTEGER(KaxContentCompAlgo)
 };
 
-class MATROSKA_DLL_API KaxContentCompSettings: public EbmlBinary {
-public:
-  static const EbmlCallbacks ClassInfos;
-
-  KaxContentCompSettings() {}
-  KaxContentCompSettings(const KaxContentCompSettings &ElementToClone):
-    EbmlBinary(ElementToClone) {}
-  static EbmlElement &Create() { return *(new KaxContentCompSettings); }
-  const EbmlCallbacks &Generic() const { return ClassInfos; }
-  operator const EbmlId &() const { return ClassInfos.GlobalId; }
-  EbmlElement *Clone() const {
-    return new KaxContentCompSettings(*this);
-  }
-  bool ValidateSize(void) const { return true; }
+DECLARE_MKX_BINARY(KaxContentCompSettings)
 };
 
-class MATROSKA_DLL_API KaxContentEncryption: public EbmlMaster {
-public:
-  static const EbmlCallbacks ClassInfos;
-
-  KaxContentEncryption();
-  KaxContentEncryption(const KaxContentEncryption &ElementToClone):
-    EbmlMaster(ElementToClone) {}
-  static EbmlElement &Create() { return *(new KaxContentEncryption); }
-  const EbmlCallbacks &Generic() const { return ClassInfos; }
-  operator const EbmlId &() const { return ClassInfos.GlobalId; }
-  EbmlElement *Clone() const { return new KaxContentEncryption(*this); }
+DECLARE_MKX_MASTER(KaxContentEncryption)
 };
 
-class MATROSKA_DLL_API KaxContentEncAlgo: public EbmlUInteger {
-public:
-  static const EbmlCallbacks ClassInfos;
-
-  KaxContentEncAlgo(): EbmlUInteger(0) {}
-  KaxContentEncAlgo(const KaxContentEncAlgo &ElementToClone):
-    EbmlUInteger(ElementToClone) {}
-  static EbmlElement &Create() { return *(new KaxContentEncAlgo); }
-  const EbmlCallbacks &Generic() const { return ClassInfos; }
-  operator const EbmlId &() const { return ClassInfos.GlobalId; }
-  EbmlElement *Clone() const { return new KaxContentEncAlgo(*this); }
+DECLARE_MKX_UINTEGER(KaxContentEncAlgo)
 };
 
-class MATROSKA_DLL_API KaxContentEncKeyID: public EbmlBinary {
-public:
-  static const EbmlCallbacks ClassInfos;
-
-  KaxContentEncKeyID() {}
-  KaxContentEncKeyID(const KaxContentEncKeyID &ElementToClone):
-    EbmlBinary(ElementToClone) {}
-  static EbmlElement &Create() { return *(new KaxContentEncKeyID); }
-  const EbmlCallbacks &Generic() const { return ClassInfos; }
-  operator const EbmlId &() const { return ClassInfos.GlobalId; }
-  EbmlElement *Clone() const { return new KaxContentEncKeyID(*this); }
-  bool ValidateSize(void) const { return true; }
+DECLARE_MKX_BINARY(KaxContentEncKeyID)
 };
 
-class MATROSKA_DLL_API KaxContentSignature: public EbmlBinary {
-public:
-  static const EbmlCallbacks ClassInfos;
-
-  KaxContentSignature() {}
-  KaxContentSignature(const KaxContentSignature &ElementToClone):
-    EbmlBinary(ElementToClone) {}
-  static EbmlElement &Create() { return *(new KaxContentSignature); }
-  const EbmlCallbacks &Generic() const { return ClassInfos; }
-  operator const EbmlId &() const { return ClassInfos.GlobalId; }
-  EbmlElement *Clone() const { return new KaxContentSignature(*this); }
-  bool ValidateSize(void) const { return true; }
+DECLARE_MKX_BINARY(KaxContentSignature)
 };
 
-class MATROSKA_DLL_API KaxContentSigKeyID: public EbmlBinary {
-public:
-  static const EbmlCallbacks ClassInfos;
-
-  KaxContentSigKeyID() {}
-  KaxContentSigKeyID(const KaxContentSigKeyID &ElementToClone):
-    EbmlBinary(ElementToClone) {}
-  static EbmlElement &Create() { return *(new KaxContentSigKeyID); }
-  const EbmlCallbacks &Generic() const { return ClassInfos; }
-  operator const EbmlId &() const { return ClassInfos.GlobalId; }
-  EbmlElement *Clone() const { return new KaxContentSigKeyID(*this); }
-  bool ValidateSize(void) const { return true; }
+DECLARE_MKX_BINARY(KaxContentSigKeyID)
 };
 
-class MATROSKA_DLL_API KaxContentSigAlgo: public EbmlUInteger {
-public:
-  static const EbmlCallbacks ClassInfos;
-
-  KaxContentSigAlgo() {}
-  KaxContentSigAlgo(const KaxContentSigAlgo &ElementToClone):
-    EbmlUInteger(ElementToClone) {}
-  static EbmlElement &Create() { return *(new KaxContentSigAlgo); }
-  const EbmlCallbacks &Generic() const { return ClassInfos; }
-  operator const EbmlId &() const { return ClassInfos.GlobalId; }
-  EbmlElement *Clone() const { return new KaxContentSigAlgo(*this); }
+DECLARE_MKX_UINTEGER(KaxContentSigAlgo)
 };
 
-class MATROSKA_DLL_API KaxContentSigHashAlgo: public EbmlUInteger {
-public:
-  static const EbmlCallbacks ClassInfos;
-
-  KaxContentSigHashAlgo() {}
-  KaxContentSigHashAlgo(const KaxContentSigHashAlgo &ElementToClone):
-    EbmlUInteger(ElementToClone) {}
-  static EbmlElement &Create() { return *(new KaxContentSigHashAlgo); }
-  const EbmlCallbacks &Generic() const { return ClassInfos; }
-  operator const EbmlId &() const { return ClassInfos.GlobalId; }
-  EbmlElement *Clone() const { return new KaxContentSigHashAlgo(*this); }
+DECLARE_MKX_UINTEGER(KaxContentSigHashAlgo)
 };
 
 END_LIBMATROSKA_NAMESPACE

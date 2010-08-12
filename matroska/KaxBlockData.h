@@ -3,7 +3,7 @@
 **
 ** <file/class description>
 **
-** Copyright (C) 2002-2005 Steve Lhomme.  All rights reserved.
+** Copyright (C) 2002-2010 Steve Lhomme.  All rights reserved.
 **
 ** This library is free software; you can redistribute it and/or
 ** modify it under the terms of the GNU Lesser General Public
@@ -37,6 +37,7 @@
 #include "ebml/EbmlMaster.h"
 #include "ebml/EbmlUInteger.h"
 #include "ebml/EbmlSInteger.h"
+#include "matroska/KaxDefines.h"
 
 using namespace LIBEBML_NAMESPACE;
 
@@ -46,34 +47,18 @@ class KaxReferenceBlock;
 class KaxBlockGroup;
 class KaxBlockBlob;
 
-class MATROSKA_DLL_API KaxReferencePriority : public EbmlUInteger {
-	public:
-		KaxReferencePriority() :EbmlUInteger(0) {}
-		KaxReferencePriority(const KaxReferencePriority & ElementToClone) :EbmlUInteger(ElementToClone) {}
-		static EbmlElement & Create() {return *(new KaxReferencePriority);}
-		const EbmlCallbacks & Generic() const {return ClassInfos;}
-		static const EbmlCallbacks ClassInfos;
-		operator const EbmlId &() const {return ClassInfos.GlobalId;}
-		EbmlElement * Clone() const {return new KaxReferencePriority(*this);}
+DECLARE_MKX_UINTEGER(KaxReferencePriority)
 };
 
 /*!
 	\brief element used for B frame-likes
 */
-class MATROSKA_DLL_API KaxReferenceBlock : public EbmlSInteger {
+DECLARE_MKX_SINTEGER_CONS(KaxReferenceBlock)
 	public:
-		KaxReferenceBlock() :RefdBlock(NULL), ParentBlock(NULL) {bTimecodeSet = false;}
-		KaxReferenceBlock(const KaxReferenceBlock & ElementToClone) :EbmlSInteger(ElementToClone), bTimecodeSet(ElementToClone.bTimecodeSet) {}
-		static EbmlElement & Create() {return *(new KaxReferenceBlock);}
-		const EbmlCallbacks & Generic() const {return ClassInfos;}
-		static const EbmlCallbacks ClassInfos;
-		operator const EbmlId &() const {return ClassInfos.GlobalId;}
-		EbmlElement * Clone() const {return new KaxReferenceBlock(*this);}
-		
 		/*!
 			\brief override this method to compute the timecode value
 		*/
-		virtual uint64 UpdateSize(bool bSaveDefault = false, bool bForceRender = false);
+		virtual filepos_t UpdateSize(bool bSaveDefault = false, bool bForceRender = false);
 
 		const KaxBlockBlob & RefBlock() const;
 		void SetReferencedBlock(const KaxBlockBlob * aRefdBlock);
@@ -83,98 +68,34 @@ class MATROSKA_DLL_API KaxReferenceBlock : public EbmlSInteger {
 	protected:
 		const KaxBlockBlob * RefdBlock;
 		const KaxBlockGroup * ParentBlock;
-		void SetReferencedTimecode(int64 refTimecode) {Value = refTimecode; bTimecodeSet = true; bValueIsSet = true;};
+		void SetReferencedTimecode(int64 refTimecode) {*static_cast<EbmlSInteger*>(this) = refTimecode; bTimecodeSet = true;};
 		bool bTimecodeSet;
 };
 
 #if MATROSKA_VERSION >= 2
-class MATROSKA_DLL_API KaxReferenceVirtual : public EbmlSInteger {
-	public:
-		KaxReferenceVirtual() {}
-		KaxReferenceVirtual(const KaxReferenceVirtual & ElementToClone) :EbmlSInteger(ElementToClone) {}
-		static EbmlElement & Create() {return *(new KaxReferenceVirtual);}
-		const EbmlCallbacks & Generic() const {return ClassInfos;}
-		static const EbmlCallbacks ClassInfos;
-		operator const EbmlId &() const {return ClassInfos.GlobalId;}
-		EbmlElement * Clone() const {return new KaxReferenceVirtual(*this);}
+DECLARE_MKX_SINTEGER(KaxReferenceVirtual)
 };
 #endif // MATROSKA_VERSION
 
-class MATROSKA_DLL_API KaxTimeSlice : public EbmlMaster {
-	public:
-		KaxTimeSlice();
-		KaxTimeSlice(const KaxTimeSlice & ElementToClone) :EbmlMaster(ElementToClone) {}
-		static EbmlElement & Create() {return *(new KaxTimeSlice);}
-		const EbmlCallbacks & Generic() const {return ClassInfos;}
-		static const EbmlCallbacks ClassInfos;
-		operator const EbmlId &() const {return ClassInfos.GlobalId;}
-		EbmlElement * Clone() const {return new KaxTimeSlice(*this);}
+DECLARE_MKX_MASTER(KaxTimeSlice)
 };
 
-class MATROSKA_DLL_API KaxSlices : public EbmlMaster {
-	public:
-		KaxSlices();
-		KaxSlices(const KaxSlices & ElementToClone) :EbmlMaster(ElementToClone) {}
-		static EbmlElement & Create() {return *(new KaxSlices);}
-		const EbmlCallbacks & Generic() const {return ClassInfos;}
-		static const EbmlCallbacks ClassInfos;
-		operator const EbmlId &() const {return ClassInfos.GlobalId;}
-		EbmlElement * Clone() const {return new KaxSlices(*this);}
+DECLARE_MKX_MASTER(KaxSlices)
 };
 
-class MATROSKA_DLL_API KaxSliceLaceNumber : public EbmlUInteger {
-	public:
-		KaxSliceLaceNumber() :EbmlUInteger(0) {}
-		KaxSliceLaceNumber(const KaxSliceLaceNumber & ElementToClone) :EbmlUInteger(ElementToClone) {}
-		static EbmlElement & Create() {return *(new KaxSliceLaceNumber);}
-		const EbmlCallbacks & Generic() const {return ClassInfos;}
-		static const EbmlCallbacks ClassInfos;
-		operator const EbmlId &() const {return ClassInfos.GlobalId;}
-		EbmlElement * Clone() const {return new KaxSliceLaceNumber(*this);}
+DECLARE_MKX_UINTEGER(KaxSliceLaceNumber)
 };
 
-class MATROSKA_DLL_API KaxSliceFrameNumber : public EbmlUInteger {
-	public:
-		KaxSliceFrameNumber() :EbmlUInteger(0) {}
-		KaxSliceFrameNumber(const KaxSliceFrameNumber & ElementToClone) :EbmlUInteger(ElementToClone) {}
-		static EbmlElement & Create() {return *(new KaxSliceFrameNumber);}
-		const EbmlCallbacks & Generic() const {return ClassInfos;}
-		static const EbmlCallbacks ClassInfos;
-		operator const EbmlId &() const {return ClassInfos.GlobalId;}
-		EbmlElement * Clone() const {return new KaxSliceFrameNumber(*this);}
+DECLARE_MKX_UINTEGER(KaxSliceFrameNumber)
 };
 
-class MATROSKA_DLL_API KaxSliceBlockAddID : public EbmlUInteger {
-	public:
-		KaxSliceBlockAddID() :EbmlUInteger(0) {}
-		KaxSliceBlockAddID(const KaxSliceBlockAddID & ElementToClone) :EbmlUInteger(ElementToClone) {}
-		static EbmlElement & Create() {return *(new KaxSliceBlockAddID);}
-		const EbmlCallbacks & Generic() const {return ClassInfos;}
-		static const EbmlCallbacks ClassInfos;
-		operator const EbmlId &() const {return ClassInfos.GlobalId;}
-		EbmlElement * Clone() const {return new KaxSliceBlockAddID(*this);}
+DECLARE_MKX_UINTEGER(KaxSliceBlockAddID)
 };
 
-class MATROSKA_DLL_API KaxSliceDelay : public EbmlUInteger {
-	public:
-		KaxSliceDelay() :EbmlUInteger(0) {}
-		KaxSliceDelay(const KaxSliceDelay & ElementToClone) :EbmlUInteger(ElementToClone) {}
-		static EbmlElement & Create() {return *(new KaxSliceDelay);}
-		const EbmlCallbacks & Generic() const {return ClassInfos;}
-		static const EbmlCallbacks ClassInfos;
-		operator const EbmlId &() const {return ClassInfos.GlobalId;}
-		EbmlElement * Clone() const {return new KaxSliceDelay(*this);}
+DECLARE_MKX_UINTEGER(KaxSliceDelay)
 };
 
-class MATROSKA_DLL_API KaxSliceDuration : public EbmlUInteger {
-	public:
-		KaxSliceDuration() {}
-		KaxSliceDuration(const KaxSliceDuration & ElementToClone) :EbmlUInteger(ElementToClone) {}
-		static EbmlElement & Create() {return *(new KaxSliceDuration);}
-		const EbmlCallbacks & Generic() const {return ClassInfos;}
-		static const EbmlCallbacks ClassInfos;
-		operator const EbmlId &() const {return ClassInfos.GlobalId;}
-		EbmlElement * Clone() const {return new KaxSliceDuration(*this);}
+DECLARE_MKX_UINTEGER(KaxSliceDuration)
 };
 
 END_LIBMATROSKA_NAMESPACE

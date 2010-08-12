@@ -1,11 +1,18 @@
-Include "*/*.proj"
+#include "*/*.proj"
 
 LIB matroska
 {
-  INCLUDE .
-  INCLUDE ../libebml
+  PROJECT_VERSION 1.1.0
 
-  USE ebml
+  INCLUDE .
+  EXPINCLUDE .
+
+  IF HAVE_EBML2
+    USE ebml2_legacy
+  ELSE
+    USE ebml
+    USEINCLUDE corec // so that stdafx implied by ebml2_legacy can build
+  ENDIF
 
 //  OPTIMIZE_GLOBALLY .
   FAVOR_MAX_SPEED .
@@ -29,7 +36,6 @@ LIB matroska
   SOURCE src/KaxSeekHead.cpp
   SOURCE src/KaxSegment.cpp
   SOURCE src/KaxTag.cpp
-  SOURCE src/KaxTagMulti.cpp
   SOURCE src/KaxTags.cpp
   SOURCE src/KaxTrackAudio.cpp
   SOURCE src/KaxTrackEntryData.cpp
@@ -50,12 +56,12 @@ LIB matroska
   HEADER matroska/KaxContexts.h
   HEADER matroska/KaxCues.h
   HEADER matroska/KaxCuesData.h
+  HEADER matroska/KaxDefines.h
   HEADER matroska/KaxInfo.h
   HEADER matroska/KaxInfoData.h
   HEADER matroska/KaxSeekHead.h
   HEADER matroska/KaxSegment.h
   HEADER matroska/KaxTag.h
-  HEADER matroska/KaxTagMulti.h
   HEADER matroska/KaxTags.h
   HEADER matroska/KaxTrackAudio.h
   HEADER matroska/KaxTrackEntryData.h
