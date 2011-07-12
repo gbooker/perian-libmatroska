@@ -37,15 +37,10 @@
 #include "matroska/KaxContexts.h"
 #include "ebml/EbmlStream.h"
 #include "matroska/KaxDefines.h"
+#include "matroska/KaxSemantic.h"
 
 // sub elements
 START_LIBMATROSKA_NAMESPACE
-
-DEFINE_START_SEMANTIC(KaxCues) 
-DEFINE_SEMANTIC_ITEM(true, false, KaxCuePoint)
-DEFINE_END_SEMANTIC(KaxCues) 
-
-DEFINE_MKX_MASTER(KaxCues, 0x1C53BB6B, 4, KaxSegment, "Cues");
 
 KaxCues::~KaxCues()
 {
@@ -125,7 +120,6 @@ const KaxCuePoint * KaxCues::GetTimecodePoint(uint64 aTimecode) const
 	uint64 TimecodeToLocate = aTimecode / GlobalTimecodeScale();
 	const KaxCuePoint * aPointPrev = NULL;
 	uint64 aPrevTime = 0;
-	const KaxCuePoint * aPointNext = NULL;
 	uint64 aNextTime = EBML_PRETTYLONGINT(0xFFFFFFFFFFFF);
 
     EBML_MASTER_CONST_ITERATOR Itr;
@@ -144,7 +138,6 @@ const KaxCuePoint * KaxCues::GetTimecodePoint(uint64 aTimecode) const
 				}
 				if (_Time < aNextTime && _Time > TimecodeToLocate) {
 					aNextTime= _Time;
-					aPointNext = tmp;
 				}
 			}
 		}
