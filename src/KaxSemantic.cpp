@@ -580,7 +580,7 @@ DEFINE_MKX_UINTEGER(KaxChapterTimeEnd, 0x92, 1, KaxChapterAtom, "ChapterTimeEnd"
 DEFINE_MKX_UINTEGER_DEF(KaxChapterFlagHidden, 0x98, 1, KaxChapterAtom, "ChapterFlagHidden", 0);
 DEFINE_MKX_UINTEGER_DEF(KaxChapterFlagEnabled, 0x4598, 2, KaxChapterAtom, "ChapterFlagEnabled", 1);
 DEFINE_MKX_BINARY (KaxChapterSegmentUID, 0x6E67, 2, KaxChapterAtom, "ChapterSegmentUID");
-DEFINE_MKX_BINARY (KaxChapterSegmentEditionUID, 0x6EBC, 2, KaxChapterAtom, "ChapterSegmentEditionUID");
+DEFINE_MKX_UINTEGER(KaxChapterSegmentEditionUID, 0x6EBC, 2, KaxChapterAtom, "ChapterSegmentEditionUID");
 DEFINE_MKX_UINTEGER(KaxChapterPhysicalEquiv, 0x63C3, 2, KaxChapterAtom, "ChapterPhysicalEquiv");
 
 DEFINE_START_SEMANTIC(KaxChapterTrack)
@@ -666,97 +666,97 @@ DEFINE_MKX_UINTEGER_DEF(KaxTagDefault, 0x4484, 2, KaxTagSimple, "TagDefault", 1)
 DEFINE_MKX_UNISTRING(KaxTagString, 0x4487, 2, KaxTagSimple, "TagString");
 DEFINE_MKX_BINARY (KaxTagBinary, 0x4485, 2, KaxTagSimple, "TagBinary");
 
-filepos_t KaxBlockVirtual::RenderData(IOCallback & output, bool bForceRender, bool bSaveDefault) {
+filepos_t KaxBlockVirtual::RenderData(IOCallback & /* output */, bool /* bForceRender */, bool /* bSaveDefault */) {
 	assert(false); // no you are not allowed to use this element !
 	return 0;
 }
 
-filepos_t KaxReferenceVirtual::RenderData(IOCallback & output, bool bForceRender, bool bSaveDefault) {
+filepos_t KaxReferenceVirtual::RenderData(IOCallback & /* output */, bool /* bForceRender */, bool /* bSaveDefault */) {
 	assert(false); // no you are not allowed to use this element !
 	return 0;
 }
 
-filepos_t KaxSliceFrameNumber::RenderData(IOCallback & output, bool bForceRender, bool bSaveDefault) {
+filepos_t KaxSliceFrameNumber::RenderData(IOCallback & /* output */, bool /* bForceRender */, bool /* bSaveDefault */) {
 	assert(false); // no you are not allowed to use this element !
 	return 0;
 }
 
-filepos_t KaxSliceBlockAddID::RenderData(IOCallback & output, bool bForceRender, bool bSaveDefault) {
+filepos_t KaxSliceBlockAddID::RenderData(IOCallback & /* output */, bool /* bForceRender */, bool /* bSaveDefault */) {
 	assert(false); // no you are not allowed to use this element !
 	return 0;
 }
 
-filepos_t KaxSliceDelay::RenderData(IOCallback & output, bool bForceRender, bool bSaveDefault) {
+filepos_t KaxSliceDelay::RenderData(IOCallback & /* output */, bool /* bForceRender */, bool /* bSaveDefault */) {
 	assert(false); // no you are not allowed to use this element !
 	return 0;
 }
 
-filepos_t KaxSliceDuration::RenderData(IOCallback & output, bool bForceRender, bool bSaveDefault) {
+filepos_t KaxSliceDuration::RenderData(IOCallback & /* output */, bool /* bForceRender */, bool /* bSaveDefault */) {
 	assert(false); // no you are not allowed to use this element !
 	return 0;
 }
 
-filepos_t KaxEncryptedBlock::RenderData(IOCallback & output, bool bForceRender, bool bSaveDefault) {
+filepos_t KaxEncryptedBlock::RenderData(IOCallback & /* output */, bool /* bForceRender */, bool /* bSaveDefault */) {
 	assert(false); // no you are not allowed to use this element !
 	return 0;
 }
 
-filepos_t KaxTrackOffset::RenderData(IOCallback & output, bool bForceRender, bool bSaveDefault) {
+filepos_t KaxTrackOffset::RenderData(IOCallback & /* output */, bool /* bForceRender */, bool /* bSaveDefault */) {
 	assert(false); // no you are not allowed to use this element !
 	return 0;
 }
 
-filepos_t KaxCodecSettings::RenderData(IOCallback & output, bool bForceRender, bool bSaveDefault) {
+filepos_t KaxCodecSettings::RenderData(IOCallback & /* output */, bool /* bForceRender */, bool /* bSaveDefault */) {
 	assert(false); // no you are not allowed to use this element !
 	return 0;
 }
 
-filepos_t KaxCodecInfoURL::RenderData(IOCallback & output, bool bForceRender, bool bSaveDefault) {
+filepos_t KaxCodecInfoURL::RenderData(IOCallback & /* output */, bool /* bForceRender */, bool /* bSaveDefault */) {
 	assert(false); // no you are not allowed to use this element !
 	return 0;
 }
 
-filepos_t KaxCodecDownloadURL::RenderData(IOCallback & output, bool bForceRender, bool bSaveDefault) {
+filepos_t KaxCodecDownloadURL::RenderData(IOCallback & /* output */, bool /* bForceRender */, bool /* bSaveDefault */) {
 	assert(false); // no you are not allowed to use this element !
 	return 0;
 }
 
-filepos_t KaxOldStereoMode::RenderData(IOCallback & output, bool bForceRender, bool bSaveDefault) {
+filepos_t KaxOldStereoMode::RenderData(IOCallback & /* output */, bool /* bForceRender */, bool /* bSaveDefault */) {
 	assert(false); // no you are not allowed to use this element !
 	return 0;
 }
 
-filepos_t KaxVideoGamma::RenderData(IOCallback & output, bool bForceRender, bool bSaveDefault) {
+filepos_t KaxVideoGamma::RenderData(IOCallback & /* output */, bool /* bForceRender */, bool /* bSaveDefault */) {
 	assert(false); // no you are not allowed to use this element !
 	return 0;
 }
 
-filepos_t KaxVideoFrameRate::RenderData(IOCallback & output, bool bForceRender, bool bSaveDefault) {
+filepos_t KaxVideoFrameRate::RenderData(IOCallback & /* output */, bool /* bForceRender */, bool /* bSaveDefault */) {
 	assert(false); // no you are not allowed to use this element !
 	return 0;
 }
 
-filepos_t KaxAudioPosition::RenderData(IOCallback & output, bool bForceRender, bool bSaveDefault) {
+filepos_t KaxAudioPosition::RenderData(IOCallback & /* output */, bool /* bForceRender */, bool /* bSaveDefault */) {
 	assert(false); // no you are not allowed to use this element !
 	return 0;
 }
 
-filepos_t KaxCueRefCluster::RenderData(IOCallback & output, bool bForceRender, bool bSaveDefault) {
+filepos_t KaxCueRefCluster::RenderData(IOCallback & /* output */, bool /* bForceRender */, bool /* bSaveDefault */) {
 	assert(false); // no you are not allowed to use this element !
 	return 0;
 }
 
-filepos_t KaxCueRefNumber::RenderData(IOCallback & output, bool bForceRender, bool bSaveDefault) {
+filepos_t KaxCueRefNumber::RenderData(IOCallback & /* output */, bool /* bForceRender */, bool /* bSaveDefault */) {
 	assert(false); // no you are not allowed to use this element !
 	return 0;
 }
 
-filepos_t KaxCueRefCodecState::RenderData(IOCallback & output, bool bForceRender, bool bSaveDefault) {
+filepos_t KaxCueRefCodecState::RenderData(IOCallback & /* output */, bool /* bForceRender */, bool /* bSaveDefault */) {
 	assert(false); // no you are not allowed to use this element !
 	return 0;
 }
 
-filepos_t KaxFileReferral::RenderData(IOCallback & output, bool bForceRender, bool bSaveDefault) {
+filepos_t KaxFileReferral::RenderData(IOCallback & /* output */, bool /* bForceRender */, bool /* bSaveDefault */) {
 	assert(false); // no you are not allowed to use this element !
 	return 0;
 }
